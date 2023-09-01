@@ -46,6 +46,8 @@ router.post(
       const safeUser = {
         id: user.id,
         email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
         username: user.username,
       };
 
@@ -72,8 +74,10 @@ router.post(
       if (user) {
         const safeUser = {
           id: user.id,
+          firstName: user.firstName,
+          lastName: user.lastName,
           email: user.email,
-          username: user.username,
+          username: user.username
         };
         return res.json({
           user: safeUser
