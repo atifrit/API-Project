@@ -17,12 +17,10 @@ module.exports = (sequelize, DataTypes) => {
   }
   Review.init({
     spotId: {
-      type: DataTypes.INTEGER,
-      references:{model:'Spots'}
+      type: DataTypes.INTEGER
     },
     userId: {
-      type: DataTypes.INTEGER,
-      references:{model:'Spots'}
+      type: DataTypes.INTEGER
     },
     review: {
       type: DataTypes.STRING,
@@ -35,11 +33,6 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'Review',
-    defaultScope: {
-      attributes: {
-        exclude: ["createdAt", "updatedAt"]
-      }
-    }
   });
   return Review;
 };

@@ -21,8 +21,7 @@ module.exports = (sequelize, DataTypes) => {
       references:{model:'Spots'}
     },
     userId: {
-      type: DataTypes.INTEGER,
-      references:{model:'Users'}
+      type: DataTypes.INTEGER
     },
     startDate: {
       type: DataTypes.DATE,
@@ -35,11 +34,6 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'Booking',
-    defaultScope: {
-      attributes: {
-        exclude: ["createdAt", "updatedAt"]
-      }
-    }
   });
   return Booking;
 };
