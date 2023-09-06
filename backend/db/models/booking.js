@@ -2,7 +2,6 @@
 const {
   Model
 } = require('sequelize');
-const { all } = require('../../routes/api/session');
 module.exports = (sequelize, DataTypes) => {
   class Booking extends Model {
     /**
