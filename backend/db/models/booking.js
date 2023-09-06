@@ -21,8 +21,7 @@ module.exports = (sequelize, DataTypes) => {
       references:{model:'Spots'}
     },
     userId: {
-      type: DataTypes.INTEGER,
-      references:{model:'Users'}
+      type: DataTypes.INTEGER
     },
     startDate: {
       type: DataTypes.DATE,
