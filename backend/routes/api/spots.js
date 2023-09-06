@@ -75,9 +75,8 @@ let validateNewSpot = [
   handleValidationErrors]
 
 router.post('/', requireAuth, validateNewSpot, async (req, res) => {
-
+ let ownerId = req.user.id;
   let {
-    ownerId,
     address,
     city,
     state,
