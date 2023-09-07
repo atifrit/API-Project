@@ -2,12 +2,41 @@ const express = require('express')
 const bcrypt = require('bcryptjs');
 
 const { setTokenCookie, requireAuth } = require('../../utils/auth');
-const { Spot, Review, SpotImage } = require('../../db/models');
+const { Spot, Review, SpotImage, User } = require('../../db/models');
 
 const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
 
 const router = express.Router();
+
+function averageStarCount(spotsArr) {
+  spotsArr.map(spot => {
+    let reviews = spot.Reviews;
+    let count = reviews.length;
+    let starCount = 0;
+    for(let el of reviews) {
+      starCount += el.stars;
+    }
+
+    spot.avgRating = starCount/count;
+    delete spot.Reviews;
+  })
+};
+
+function getPreviewImage(spotsArr) {
+  spotsArr.map(spot => {
+    let spotImages = spot.SpotImages;
+    let previewImage = null;
+    for(let el of spotImages) {
+      if(el.preview == true) {
+        previewImage = el.url;
+      }
+    }
+
+    spot.previewImage = previewImage;
+    delete spot.SpotImages;
+  })
+}
 
 // Get all spots
 
@@ -19,38 +48,76 @@ const router = express.Router();
 
     let spotsPOJOs = spots.map(spot => spot.toJSON());
 
-    console.log(spotsPOJOs);
-    spotsPOJOs.map(spot => {
-      let reviews = spot.Reviews;
-      let count = reviews.length;
-      let starCount = 0;
-      for(let el of reviews) {
-        starCount += el.stars;
-      }
+    averageStarCount(spotsPOJOs);
+    getPreviewImage(spotsPOJOs);
 
-      spot.avgRating = starCount/count;
-      delete spot.Reviews;
-    })
-
-
-    spotsPOJOs.map(spot => {
-      let spotImages = spot.SpotImages;
-      let previewImage = null;
-      for(let el of spotImages) {
-        if(el.preview == true) {
-          previewImage = el.url;
-        }
-      }
-
-      spot.preview = previewImage;
-      delete spot.SpotImages;
-    })
-
-    res.send(spotsPOJOs);
+    res.send({"Spots":spotsPOJOs});
   });
 
 // End of Get all spots
 
+// Get All spots owned by current user
+
+router.get('/current', requireAuth, async (req, res) => {
+  let spots = await Spot.findAll({
+    where:{ownerId:req.user.id},
+    include: [
+    {model:Review},
+    {model:SpotImage}
+  ]
+});
+
+  let spotsPOJOs = spots.map(spot => spot.toJSON());
+
+  averageStarCount(spotsPOJOs);
+  getPreviewImage(spotsPOJOs);
+
+  res.send({"Spots":spotsPOJOs});
+});
+
+//End of Get All spots owned by current user
+
+// Get spot info by Id
+
+router.get('/:spotId', async (req, res) => {
+  let spot = await Spot.findByPk(req.params.spotId, {
+    include: [
+    {model:Review},
+    {model:SpotImage,
+    attributes:{exclude:['spotId','createdAt', 'updatedAt']}},
+    {model:User,
+    as: "Owner",
+    attributes:{exclude:['username',"hashedPassword", "email", "createdAt", "updatedAt"]}}
+  ]
+});
+
+if(!spot) {
+  res.status(404);
+  return res.send({
+    "message": "Spot couldn't be found"
+  });
+}
+
+  let spotPOJO = spot.toJSON();
+
+  let reviews = spotPOJO.Reviews;
+    let count = reviews.length;
+    let starCount = 0;
+    for(let el of reviews) {
+      starCount += el.stars;
+    }
+
+    spotPOJO.avgRating = starCount/count;
+    spotPOJO.numReviews = count;
+    delete spotPOJO.Reviews;
+
+
+
+
+  res.send(spotPOJO);
+});
+
+// End of get spot infor by id
 
 // Post a new Spot
 
