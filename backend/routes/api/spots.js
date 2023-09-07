@@ -112,12 +112,10 @@ if(!spot) {
     delete spotPOJO.Reviews;
 
 
-
-
   res.send(spotPOJO);
 });
 
-// End of get spot infor by id
+// End of get spot info by id
 
 // Post a new Spot
 
@@ -191,5 +189,61 @@ router.post('/', requireAuth, validateNewSpot, async (req, res) => {
 })
 
 // End of Post a new Spot
+
+// Add an Image to a Spot
+
+spotImageValidator = [
+  handleValidationErrors]
+
+
+router.post('/:spotId/images', requireAuth, async (req, res) => {
+  let spotId = Number(req.params.spotId);
+  console.log(spotId);
+  let {url, preview} = req.body;
+
+  let spot = await Spot.findByPk(spotId);
+
+  if(spot.ownerId !== req.user.id) {
+    res.status(403);
+    return res.send({
+      "message": "Forbidden"
+    })
+  }
+
+  if(!spot) {
+    res.status(404);
+    return res.send(
+      {
+        "message": "Spot couldn't be found"
+      }
+    )
+  }
+
+  let newSpotImage = await SpotImage.create(
+    {
+      spotId,
+      url,
+      preview
+    }
+  )
+
+    res.send(
+      {
+        id:newSpotImage.id,
+        url,
+        preview
+      }
+    );
+
+})
+
+// End of Add an Image to a Spot
+
+// Edit a Spot
+
+
+
+// End of Edit a Spot
+
 
 module.exports = router;
