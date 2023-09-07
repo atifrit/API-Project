@@ -198,7 +198,6 @@ spotImageValidator = [
 
 router.post('/:spotId/images', requireAuth, async (req, res) => {
   let spotId = Number(req.params.spotId);
-  console.log(spotId);
   let {url, preview} = req.body;
 
   let spot = await Spot.findByPk(spotId);
@@ -245,7 +244,6 @@ router.post('/:spotId/images', requireAuth, async (req, res) => {
 router.put('/:spotId', requireAuth, validateNewSpot, async (req, res) => {
 
   let spotId = Number(req.params.spotId);
-  console.log(spotId);
   let {address, city, state, country, lat, lng, name, description, price} = req.body;
 
   let spot = await Spot.findByPk(spotId);
@@ -285,5 +283,39 @@ router.put('/:spotId', requireAuth, validateNewSpot, async (req, res) => {
 
 // End of Edit a Spot
 
+
+// Delete a Spot
+
+router.delete('/:spotId', requireAuth, async (req, res) => {
+
+  let spotId = Number(req.params.spotId);
+
+  let spot = await Spot.findByPk(spotId);
+
+  if(!spot) {
+    res.status(404);
+    return res.send(
+      {
+        "message": "Spot couldn't be found"
+      }
+    )
+  }
+
+  if(spot.ownerId !== req.user.id) {
+    res.status(403);
+    return res.send({
+      "message": "Forbidden"
+    })
+  }
+
+  await spot.destroy();
+
+  res.send({
+    "message": "Successfully deleted"
+  })
+
+})
+
+// End of Delete a Spot
 
 module.exports = router;
