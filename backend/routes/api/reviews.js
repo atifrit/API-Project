@@ -45,7 +45,63 @@ router.get('/current', requireAuth, async (req, res) => {
 
 // End of Get all reviews for current user
 
+// Add Image to review
+
+router.post('/:reviewId/images', requireAuth, async (req, res) => {
+    let reviewId = Number(req.params.reviewId)
+
+    let review = await Review.findByPk(reviewId, {include:{model:ReviewImage}});
+
+    if(!review) {
+        res.status(404);
+        return res.send({
+            "message": "Review couldn't be found"
+          });
+    }
 
 
+    if(Number(req.user.id) !== review.userId) {
+        res.status(403);
+        return res.send({
+            "message": "Forbidden"
+          });
+    }
+
+    let reviewPOJO = review.toJSON();
+    let reviewCount = 0;
+    for(let el of reviewPOJO.ReviewImages) {
+        reviewCount++
+    }
+    if(reviewCount >= 10) {
+        res.status(403);
+        return res.send({
+            "message": "Maximum number of images for this resource was reached"
+          })
+    }
+
+    let {url} = req.body;
+
+    let newReviewImage = await ReviewImage.create({
+        reviewId,
+        url
+    });
+
+    let newReviewImagePOJO = newReviewImage.toJSON();
+
+    delete newReviewImagePOJO.reviewId;
+    delete newReviewImagePOJO.createdAt;
+    delete newReviewImagePOJO.updatedAt;
+
+    res.send(newReviewImagePOJO);
+});
+
+// End of Add Image to review
+
+
+// Edit a review
+
+
+
+// End of Edit a review
 
 module.exports = router;
