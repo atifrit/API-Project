@@ -100,7 +100,44 @@ router.post('/:reviewId/images', requireAuth, async (req, res) => {
 
 // Edit a review
 
+reviewValidator = [
+    check('review').exists().withMessage("Review text is required"),
+    check('review').notEmpty().withMessage("Review text is required"),
+    check('stars').exists().withMessage("Stars must be an integer from 1 to 5"),
+    check('stars').isInt({min:1, max: 5}).withMessage("Stars must be an integer from 1 to 5"),
+    handleValidationErrors
+  ]
 
+router.put('/:reviewId', requireAuth, reviewValidator, async (req, res) => {
+    let reviewId = Number(req.params.reviewId);
+
+    let reviewToEdit = await Review.findByPk(reviewId);
+
+    if(!reviewToEdit) {
+        res.status(404);
+        return res.send({
+            "message": "Review couldn't be found"
+          });
+    }
+
+    console.log(Number(req.user.id));
+    console.log(reviewToEdit.userId);
+
+    if(Number(req.user.id) !== reviewToEdit.userId) {
+        res.status(403);
+        return res.send({
+            "message": "Forbidden"
+          });
+    }
+
+    let {review, stars} = req.body;
+
+    reviewToEdit.review = review;
+    reviewToEdit.stars = stars;
+    await reviewToEdit.save();
+
+    res.send(reviewToEdit);
+});
 
 // End of Edit a review
 
