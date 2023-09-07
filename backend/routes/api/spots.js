@@ -2,7 +2,7 @@ const express = require('express')
 const bcrypt = require('bcryptjs');
 
 const { setTokenCookie, requireAuth } = require('../../utils/auth');
-const { Spot, Review, SpotImage, User } = require('../../db/models');
+const { Spot, Review, SpotImage, User, ReviewImage } = require('../../db/models');
 
 const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
@@ -317,5 +317,39 @@ router.delete('/:spotId', requireAuth, async (req, res) => {
 })
 
 // End of Delete a Spot
+
+// Get all reviews for a spot by id
+
+router.get('/:spotId/reviews', async (req, res) => {
+  let Id = Number(req.params.spotId);
+
+  let spot = await Spot.findByPk(Id);
+
+  if(!spot) {
+      res.status(404);
+      return res.send({
+          "message": "Spot couldn't be found"
+        });
+  }
+
+  let reviews = await Review.findAll(
+      {
+          where:{spotId:Id},
+          include:[
+            {model:User, attributes:{exclude:['username',"hashedPassword", "email", "createdAt", "updatedAt"]}},
+              {model: ReviewImage, attributes:{exclude:['createdAt', 'updatedAt', 'reviewId']}}
+          ]
+  })
+
+
+  res.send({"Reviews":reviews});
+});
+
+// End of Get all reviews for a spot by id
+
+
+// Post a new review to a spot by ID
+
+
 
 module.exports = router;
