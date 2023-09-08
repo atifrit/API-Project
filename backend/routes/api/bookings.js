@@ -37,7 +37,6 @@ router.get('/current', requireAuth, async (req, res) => {
         }
 
         el.Spot.previewImage = previewImage;
-        console.log(el.Spot.previewImage);
         delete el.Spot.SpotImages;
     }
 
@@ -85,7 +84,7 @@ router.put('/:bookingId', requireAuth, bookingValidator, async (req, res) => {
     let comparisonStart = new Date(req.body.startDate).getTime();
     let comparisonEnd = new Date(req.body.endDate).getTime();
 
-    if(new Date().getTime >= new Date(bookingPOJO.endDate).getTime()) {
+    if(new Date().getTime() >= new Date(bookingPOJO.endDate).getTime()) {
         res.status(403);
         return res.send({
             "message": "Past bookings can't be modified"
@@ -96,8 +95,6 @@ router.put('/:bookingId', requireAuth, bookingValidator, async (req, res) => {
     let bookingsPOJOs = bookings.map(booking => booking.toJSON());
 
     for(let el of bookingsPOJOs) {
-        console.log(el.id);
-        console.log(booking.id);
         if((comparisonEnd <= new Date(el.endDate).getTime() && comparisonEnd >= new Date(el.startDate).getTime()) &&
         (comparisonStart >= new Date(el.startDate).getTime() && comparisonStart <= new Date(el.endDate).getTime()) && Number(el.id) !== Number(booking.id)) {
           res.status(403);
@@ -153,4 +150,46 @@ router.put('/:bookingId', requireAuth, bookingValidator, async (req, res) => {
 });
 
 // End of Edit a booking
+
+
+// delete a booking
+
+router.delete('/:bookingId', requireAuth, async (req, res) => {
+    let booking = await Booking.findByPk(Number(req.params.bookingId));
+
+    if(!booking) {
+        res.status(404);
+        return res.send({
+            "message": "Booking couldn't be found"
+          });
+    }
+
+    if(booking.userId !== req.user.id) {
+        res.status(403);
+        return res.send({
+            "message": "Forbidden"
+          });
+    }
+
+    let bookingPOJO = booking.toJSON();
+
+    if(new Date().getTime() >= new Date(bookingPOJO.startDate).getTime()) {
+        res.status(403);
+        return res.send({
+            "message": "Bookings that have been started can't be deleted"
+          });
+    }
+
+    await booking.destroy();
+
+    res.send({
+        "message": "Successfully deleted"
+      });
+
+})
+
+// end of delete a booking
+
+
+
 module.exports = router;
