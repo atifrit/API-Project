@@ -4,7 +4,7 @@ const bcrypt = require('bcryptjs');
 const { setTokenCookie, requireAuth } = require('../../utils/auth');
 const { Spot, Review, SpotImage, User, ReviewImage, Booking } = require('../../db/models');
 
-const { check } = require('express-validator');
+const { check, body } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
 
 const router = express.Router();
@@ -463,7 +463,160 @@ router.get('/:spotId/bookings', requireAuth, async (req, res) => {
 
 // Create a new booking by Spot Id
 
+bookingValidator = [
+  check('endDate').custom(async (endDate, {req}) => {
+    let comparisonEnd = new Date(endDate).getTime();
+    let comparisonStart = new Date(req.body.startDate).getTime();
+    if(comparisonStart >= comparisonEnd) {
+      throw new Error("endDate cannot be on or before startDate");
+    }
+    return true;
+  }),
+  // check('startDate').custom(async (startDate, {req}) => {
+  //   let bookings = await Booking.findAll({where:{spotId:Number(req.params.spotId)}});
+  //   let bookingsPOJOs = bookings.map(booking => booking.toJSON());
+  //   let comparisonStart = new Date(startDate).getTime();
+  //   for(let el of bookingsPOJOs) {
+  //     if(comparisonStart >= new Date(el.startDate).getTime() && comparisonStart <= new Date(el.endDate).getTime()) {
+  //       throw new Error("Start date conflicts with an existing booking")
+  //     }
+  //   }
+  //   return true;
 
+  // }),
+  // check('endDate').custom(async (endDate, {req}) => {
+  //   let bookings = await Booking.findAll({where:{spotId:Number(req.params.spotId)}});
+  //   let bookingsPOJOs = bookings.map(booking => booking.toJSON());
+  //   let comparisonEnd = new Date(endDate).getTime();
+  //   for(let el of bookingsPOJOs) {
+  //     if(comparisonEnd <= new Date(el.endDate).getTime() && comparisonEnd >= new Date(el.startDate).getTime()) {
+  //       throw new Error("End date conflicts with an existing booking")
+  //     }
+  //   }
+  //   return true;
+
+  // }),
+
+
+
+  // check('startDate').custom(async (startDate, {req}) => {
+  //   let bookings = await Booking.findAll({where:{spotId:Number(req.params.spotId)}});
+  //   let bookingsPOJOs = bookings.map(booking => booking.toJSON());
+  //   let comparisonStart = new Date(startDate).getTime();
+  //   let comparisonEnd = new Date(req.body.endDate).getTime();
+  //   for(let el of bookingsPOJOs) {
+  //     if(comparisonStart <= new Date(el.startDate).getTime() && comparisonEnd >= new Date(el.endDate).getTime()) {
+  //       throw new Error("Start date conflicts with an existing booking", {statusCode: 403})
+  //     }
+  //   }
+  //   return true;
+
+  // }),
+  // check('endDate').custom(async (endDate, {req}) => {
+  //   let bookings = await Booking.findAll({where:{spotId:Number(req.params.spotId)}});
+  //   let bookingsPOJOs = bookings.map(booking => booking.toJSON());
+  //   let comparisonEnd = new Date(endDate).getTime();
+  //   let comparisonStart = new Date(req.body.startDate).getTime();
+  //   for(let el of bookingsPOJOs) {
+  //     if(comparisonStart <= new Date(el.startDate).getTime() && comparisonEnd >= new Date(el.endDate).getTime()) {
+  //       throw new Error("End date conflicts with an existing booking", {statusCode: 403})
+  //     }
+  //   }
+  //   return true;
+
+  // }),
+  handleValidationErrors
+]
+
+router.post('/:spotId/bookings', requireAuth, bookingValidator, async (req, res) => {
+  let Id = Number(req.params.spotId);
+
+  let spot = await Spot.findByPk(Id);
+
+  if(!spot) {
+      res.status(404);
+      return res.send({
+          "message": "Spot couldn't be found"
+        });
+  }
+
+  if(spot.ownerId == req.user.id) {
+    res.status(403);
+    return res.send({
+      "message": "Forbidden"
+    })
+  }
+
+  let {startDate, endDate} = req.body;
+
+
+  let bookings = await Booking.findAll({where:{spotId:Number(req.params.spotId)}});
+  let bookingsPOJOs = bookings.map(booking => booking.toJSON());
+  let comparisonStart = new Date(req.body.startDate).getTime();
+  let comparisonEnd = new Date(req.body.endDate).getTime();
+
+  for(let el of bookingsPOJOs) {
+    if((comparisonEnd <= new Date(el.endDate).getTime() && comparisonEnd >= new Date(el.startDate).getTime()) &&
+    comparisonStart >= new Date(el.startDate).getTime() && comparisonStart <= new Date(el.endDate).getTime()) {
+      res.status(403);
+      return res.send({
+        "message": "Sorry, this spot is already booked for the specified dates",
+        "errors": {
+          "startDate": "Start date conflicts with an existing booking",
+          "endDate": "End date conflicts with an existing booking"
+        }
+      });
+    } else if (comparisonEnd <= new Date(el.endDate).getTime() && comparisonEnd >= new Date(el.startDate).getTime()) {
+      res.status(403);
+      return res.send({
+        "message": "Sorry, this spot is already booked for the specified dates",
+        "errors": {
+          "endDate": "End date conflicts with an existing booking"
+        }
+      });
+    } else if (comparisonStart >= new Date(el.startDate).getTime() && comparisonStart <= new Date(el.endDate).getTime()) {
+      res.status(403);
+      return res.send({
+        "message": "Sorry, this spot is already booked for the specified dates",
+        "errors": {
+          "startDate": "Start date conflicts with an existing booking"
+        }
+      });
+    }
+  }
+
+  for(let el of bookingsPOJOs) {
+    if(comparisonStart <= new Date(el.startDate).getTime() && comparisonEnd >= new Date(el.endDate).getTime()) {
+      res.status(403);
+      return res.send({
+        "message": "Sorry, this spot is already booked for the specified dates",
+        "errors": {
+          "startDate": "Start date conflicts with an existing booking",
+          "endDate": "End date conflicts with an existing booking"
+        }
+      });
+    }
+  }
+
+
+  let newBooking = await Booking.create({
+    spotId: spot.id,
+    userId: req.user.id,
+    startDate,
+    endDate
+  })
+
+  let bookingPOJO = newBooking.toJSON();
+
+  let reformattedStart = reformatDate(bookingPOJO.startDate);
+  let reformattedEnd = reformatDate(bookingPOJO.endDate);
+
+  bookingPOJO.startDate = reformattedStart;
+  bookingPOJO.endDate = reformattedEnd;
+
+  res.send(bookingPOJO);
+
+});
 
 // End of create a new booking by Spot Id
 
