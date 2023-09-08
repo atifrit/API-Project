@@ -2,7 +2,7 @@ const express = require('express')
 const bcrypt = require('bcryptjs');
 
 const { setTokenCookie, requireAuth } = require('../../utils/auth');
-const { Spot, SpotImage} = require('../../db/models');
+const { Spot, Review, SpotImage, User, ReviewImage, Booking } = require('../../db/models');
 
 const { check, body } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
@@ -45,31 +45,31 @@ function reformatDate (date) {
   return newDate;
 }
 
-// Delete a Spot image
+// Delete a Review image
 
-router.delete('/:imageId', requireAuth, async(req, res) => {
-    let spotImage = await SpotImage.findByPk(Number(req.params.imageId), {include:{model:Spot}});
-    if(!spotImage) {
+router.delete('/:imageId', requireAuth, async (req, res) => {
+    let reviewImage = await ReviewImage.findByPk(Number(req.params.imageId), {include:{model:Review}});
+    if(!reviewImage) {
         res.status(404);
         return res.send({
-            "message": "Spot Image couldn't be found"
+            "message": "Review Image couldn't be found"
           })
     }
 
-    if(spotImage.Spot.dataValues.ownerId !== req.user.id) {
+    if(reviewImage.Review.dataValues.userId !== req.user.id) {
         res.status(403);
         return res.send({
             "message": "Forbidden"
           });
     }
 
-    await spotImage.destroy();
+    await reviewImage.destroy();
 
     res.send({
         "message": "Successfully deleted"
       })
 })
 
-// End of Delete a Spot image
+// End of Delete a Review image
 
 module.exports = router;
