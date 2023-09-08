@@ -46,4 +46,111 @@ router.get('/current', requireAuth, async (req, res) => {
 
 // End of Get all bookings for current user
 
+
+// Edit a booking
+
+bookingValidator = [
+    check('endDate').custom(async (endDate, {req}) => {
+      let comparisonEnd = new Date(endDate).getTime();
+      let comparisonStart = new Date(req.body.startDate).getTime();
+      if(comparisonStart >= comparisonEnd) {
+        throw new Error("endDate cannot be on or before startDate");
+      }
+      return true;
+    }),
+    handleValidationErrors]
+
+
+
+router.put('/:bookingId', requireAuth, bookingValidator, async (req, res) => {
+
+    let booking = await Booking.findByPk(Number(req.params.bookingId));
+
+    if(!booking) {
+        res.status(404);
+        return res.send({
+            "message": "Booking couldn't be found"
+          });
+    }
+
+    if(booking.userId !== req.user.id) {
+        res.status(403);
+        return res.send({
+            "message": "Forbidden"
+          });
+    }
+
+
+    let bookingPOJO = booking.toJSON();
+    let comparisonStart = new Date(req.body.startDate).getTime();
+    let comparisonEnd = new Date(req.body.endDate).getTime();
+
+    if(new Date().getTime >= new Date(bookingPOJO.endDate).getTime()) {
+        res.status(403);
+        return res.send({
+            "message": "Past bookings can't be modified"
+          });
+    }
+
+    let bookings = await Booking.findAll({where:{spotId:booking.spotId}});
+    let bookingsPOJOs = bookings.map(booking => booking.toJSON());
+
+    for(let el of bookingsPOJOs) {
+        console.log(el.id);
+        console.log(booking.id);
+        if((comparisonEnd <= new Date(el.endDate).getTime() && comparisonEnd >= new Date(el.startDate).getTime()) &&
+        (comparisonStart >= new Date(el.startDate).getTime() && comparisonStart <= new Date(el.endDate).getTime()) && Number(el.id) !== Number(booking.id)) {
+          res.status(403);
+          return res.send({
+            "message": "Sorry, this spot is already booked for the specified dates",
+            "errors": {
+              "startDate": "Start date conflicts with an existing booking",
+              "endDate": "End date conflicts with an existing booking"
+            }
+          });
+        } else if (comparisonEnd <= new Date(el.endDate).getTime() && comparisonEnd >= new Date(el.startDate).getTime() && Number(el.id) !== Number(booking.id)) {
+          res.status(403);
+          return res.send({
+            "message": "Sorry, this spot is already booked for the specified dates",
+            "errors": {
+              "endDate": "End date conflicts with an existing booking"
+            }
+          });
+        } else if (comparisonStart >= new Date(el.startDate).getTime() && comparisonStart <= new Date(el.endDate).getTime() && Number(el.id) !== Number(booking.id)) {
+          res.status(403);
+          return res.send({
+            "message": "Sorry, this spot is already booked for the specified dates",
+            "errors": {
+              "startDate": "Start date conflicts with an existing booking"
+            }
+          });
+        }
+      }
+
+      for(let el of bookingsPOJOs) {
+        if(comparisonStart <= new Date(el.startDate).getTime() && comparisonEnd >= new Date(el.endDate).getTime() && Number(el.id) !== Number(booking.id)) {
+          res.status(403);
+          return res.send({
+            "message": "Sorry, this spot is already booked for the specified dates",
+            "errors": {
+              "startDate": "Start date conflicts with an existing booking",
+              "endDate": "End date conflicts with an existing booking"
+            }
+          });
+        }
+      }
+
+
+      booking.startDate = req.body.startDate;
+      booking.endDate = req.body.endDate;
+      await booking.save();
+
+      let resultPOJO = booking.toJSON();
+      resultPOJO.startDate = reformatDate(booking.startDate);
+      resultPOJO.endDate = reformatDate(booking.endDate);
+      res.send(resultPOJO);
+
+});
+
+// End of Edit a booking
 module.exports = router;
