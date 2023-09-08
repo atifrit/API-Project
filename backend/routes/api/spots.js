@@ -47,18 +47,125 @@ function reformatDate (date) {
 
 // Get all spots
 
-  router.get('/', async (req, res) => {
-    let spots = await Spot.findAll({include: [
+spotQueryValidator = [
+  check('page').custom(async (value, {req}) => {
+    if(req.query.page < 1) {
+      throw new Error("Page must be greater than or equal to 1");
+    }
+  }),
+  check('size').custom(async (value, {req}) => {
+    if(req.query.size < 1) {
+      throw new Error("Size must be greater than or equal to 1");
+    }
+  }),
+  check('maxLat').custom(async (value, {req}) => {
+    if (!req.query.maxLat) return true;
+    if(isNaN(req.query.maxLat)) {
+      throw new Error("Maximum latitude is invalid");
+    }
+    return true
+  }),
+  check('minLat').custom(async (value, {req}) => {
+    if (!req.query.minLat) return true;
+    if(isNaN(req.query.minLat)) {
+      throw new Error("Minimum latitude is invalid");
+    }
+  }),
+  check('maxLng').custom(async (value, {req}) => {
+    if (!req.query.maxLng) return true;
+    if(isNaN(req.query.maxLng)) {
+      throw new Error("Maximum longitude is invalid");
+    }
+  }),
+  check('minLng').custom(async (value, {req}) => {
+    if (!req.query.minLng) return true;
+    if(isNaN(req.query.minLng)) {
+      throw new Error("Minimum longitude is invalid");
+    }
+  }),
+  check('minPrice').custom(async (value, {req}) => {
+    if (!req.query.minPrice) return true;
+    if(isNaN(req.query.minPrice) || Number(req.query.minPrice) < 0) {
+      throw new Error("Minimum price must be greater than or equal to 0");
+    }
+  }),
+  check('maxPrice').custom(async (value, {req}) => {
+    if (!req.query.maxPrice) return true;
+    if(isNaN(req.query.maxPrice) || Number(req.query.maxPrice) < 0) {
+      throw new Error("Maximum price must be greater than or equal to 0");
+    }
+  }),
+  handleValidationErrors
+]
+const { Op } = require("sequelize");
+
+  router.get('/', spotQueryValidator, async (req, res) => {
+
+    let queryObj = {};
+
+    let{size, page, minLat, maxLat, minLng, maxLng, minPrice, maxPrice} = req.query;
+
+    if(minLat) {
+      queryObj.lat = {[Op.gte]:minLat};
+    }
+
+    if(maxLat) {
+      queryObj.lat = {[Op.lte]:maxLat};
+    }
+
+    if(minLat && maxLat){
+      queryObj.lat = {[Op.gte]:minLat, [Op.lte]:maxLat};
+    }
+
+    if(minLng) {
+      queryObj.lng = {[Op.gte]:minLng};
+    }
+
+    if(maxLng) {
+      queryObj.lng = {[Op.lte]:maxLng};
+    }
+
+    if(minLng && maxLng){
+      queryObj.lng = {[Op.gte]:minLng, [Op.lte]:maxLng};
+    }
+
+
+
+    if(minPrice) {
+      queryObj.price = {[Op.gte]:minPrice};
+    }
+
+    if(maxPrice) {
+      queryObj.price = {[Op.lte]:maxPrice};
+    }
+
+    if(minPrice && maxPrice){
+      queryObj.price = {[Op.gte]:minPrice, [Op.lte]:maxPrice};
+    }
+
+    if(!size || size > 20) {
+      size = 20;
+    }
+
+    if(!page) {
+      page = 1;
+    }
+
+    if(page > 10) {
+      page = 10;
+    }
+
+    let spots = await Spot.findAll({where:queryObj ,include: [
       {model:Review},
       {model:SpotImage}
-    ]});
+    ], limit: size, offset: (size*(page-1))});
 
     let spotsPOJOs = spots.map(spot => spot.toJSON());
 
     averageStarCount(spotsPOJOs);
     getPreviewImage(spotsPOJOs);
 
-    res.send({"Spots":spotsPOJOs});
+    res.send({"Spots":spotsPOJOs, page, size});
   });
 
 // End of Get all spots
@@ -619,5 +726,9 @@ router.post('/:spotId/bookings', requireAuth, bookingValidator, async (req, res)
 });
 
 // End of create a new booking by Spot Id
+
+
+
+
 
 module.exports = router;
