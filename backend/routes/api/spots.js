@@ -2,7 +2,7 @@ const express = require('express')
 const bcrypt = require('bcryptjs');
 
 const { setTokenCookie, requireAuth } = require('../../utils/auth');
-const { Spot, Review, SpotImage, User, ReviewImage } = require('../../db/models');
+const { Spot, Review, SpotImage, User, ReviewImage, Booking } = require('../../db/models');
 
 const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
@@ -36,6 +36,13 @@ function getPreviewImage(spotsArr) {
     spot.previewImage = previewImage;
     delete spot.SpotImages;
   })
+}
+
+function reformatDate (date) {
+  let newDate = new Date(date.toUTCString()).toLocaleDateString('en-US', {
+    timeZone: 'UTC',
+  }).replace(/\//g, '-');
+  return newDate;
 }
 
 // Get all spots
@@ -401,5 +408,63 @@ router.post('/:spotId/reviews', requireAuth, reviewValidator, async (req, res) =
 
 // End of Post a new review to a spot by ID
 
+
+// Get all bookings for a spot by Id
+
+
+
+
+router.get('/:spotId/bookings', requireAuth, async (req, res) => {
+  let Id = Number(req.params.spotId);
+
+  let spot = await Spot.findByPk(Id);
+
+  if(!spot) {
+      res.status(404);
+      return res.send({
+          "message": "Spot couldn't be found"
+        });
+  }
+
+  let bookings;
+  if(req.user.id == spot.ownerId) {
+    bookings = await Booking.findAll(
+      {
+          where: {spotId:Id},
+          include: {model:User, attributes:{exclude:['username',"hashedPassword", "email", "createdAt", "updatedAt"]}},
+  })
+  } else {
+    bookings = await Booking.findAll(
+      {
+          where:{spotId:Id},
+          attributes:{exclude:['createdAt', 'updatedAt', 'id', 'userId']}
+  })
+
+  }
+
+
+  let bookingsPOJOs = bookings.map(booking => booking.toJSON());
+
+
+  for(let el of bookingsPOJOs) {
+    let updatedStartDate = reformatDate(el.startDate);
+    let updatedEndDate = reformatDate(el.endDate);
+
+    el.startDate = updatedStartDate;
+    el.endDate = updatedEndDate;
+  }
+
+
+  res.send({"Bookings":bookingsPOJOs});
+});
+
+// End of get all bookings for a spot by Id
+
+
+// Create a new booking by Spot Id
+
+
+
+// End of create a new booking by Spot Id
 
 module.exports = router;
