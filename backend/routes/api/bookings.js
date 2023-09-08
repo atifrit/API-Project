@@ -7,6 +7,12 @@ const { handleValidationErrors } = require('../../utils/validation');
 const { Spot, Review, SpotImage, User, ReviewImage, Booking } = require('../../db/models');
 const router = express.Router();
 
+function reformatDate (date) {
+    let newDate = new Date(date.toUTCString()).toLocaleDateString('en-US', {
+      timeZone: 'UTC',
+    }).replace(/\//g, '-');
+    return newDate;
+  }
 
 // Get all bookings for current user
 
@@ -16,6 +22,12 @@ router.get('/current', requireAuth, async (req, res) => {
     let bookingsPOJOs = bookings.map(booking => booking.toJSON());
 
     for(let el of bookingsPOJOs) {
+        let newStartDate = reformatDate(el.startDate);
+        let newEndDate = reformatDate(el.endDate);
+
+        el.startDate = newStartDate;
+        el.endDate = newEndDate;
+
         let previewImage = null;
 
         for(let subEl of el.Spot.SpotImages){

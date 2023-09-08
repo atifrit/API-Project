@@ -38,6 +38,13 @@ function getPreviewImage(spotsArr) {
   })
 }
 
+function reformatDate (date) {
+  let newDate = new Date(date.toUTCString()).toLocaleDateString('en-US', {
+    timeZone: 'UTC',
+  }).replace(/\//g, '-');
+  return newDate;
+}
+
 // Get all spots
 
   router.get('/', async (req, res) => {
@@ -404,6 +411,9 @@ router.post('/:spotId/reviews', requireAuth, reviewValidator, async (req, res) =
 
 // Get all bookings for a spot by Id
 
+
+
+
 router.get('/:spotId/bookings', requireAuth, async (req, res) => {
   let Id = Number(req.params.spotId);
 
@@ -432,7 +442,20 @@ router.get('/:spotId/bookings', requireAuth, async (req, res) => {
 
   }
 
-  res.send({"Bookings":bookings});
+
+  let bookingsPOJOs = bookings.map(booking => booking.toJSON());
+
+
+  for(let el of bookingsPOJOs) {
+    let updatedStartDate = reformatDate(el.startDate);
+    let updatedEndDate = reformatDate(el.endDate);
+
+    el.startDate = updatedStartDate;
+    el.endDate = updatedEndDate;
+  }
+
+
+  res.send({"Bookings":bookingsPOJOs});
 });
 
 // End of get all bookings for a spot by Id
