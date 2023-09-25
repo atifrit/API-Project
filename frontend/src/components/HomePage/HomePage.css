@@ -1,0 +1,27 @@
+.homePageSpots {
+    display: flex;
+}
+
+.spotDisplayCard {
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+    border: 1px solid black;
+    margin: 10px;
+    padding: 10px;
+}
+
+.toolTip {
+    position: relative;
+}
+.toolTipText {
+    visibility:hidden;
+    text-align:center;
+    color: grey;
+    font-size: 25px;
+    padding: 10px;
+}
+
+.toolTip:hover .toolTipText{
+    visibility:visible
+}
