@@ -18,17 +18,24 @@ export default function SpotDetails () {
     }
 
 
+
+//!spots[id].Owner || !spots[id].spotImages
+    if (!spots[id].Owner || !spots[id].spotImages) {
+        dispatch(spotsActions.readSpotByIdThunkActionCreator(id))
+    }
+
     let spot = spots[id];
 
     return (
-        <div id={spot.id} className='spotDisplayCard toolTip'>
-            <span className='toolTipText'>{spot.name}</span>
-            <img src={spot.previewImage ? spot.previewImage : 'placeHolder'} alt={spot.description}></img>
-            <p className='spotNameText'>{spot.name}</p>
-            <p className='spotDescriptionText'><i class="fas fa-solid fa-star" /> {spot.avgRating ? spot.avgRating : 'New'}</p>
-            <p className='spotDescriptionText'>{spot.city}, {spot.state}</p>
-            <p className='spotDescriptionText'>{spot.description}</p>
-            <p className='spotDescriptionText'>${spot.price} night</p>
-        </div>
+        <div>hello</div>
+        // <div id={spot.id} className='spotDisplayCard toolTip'>
+        //     <span className='toolTipText'>{spot.name}</span>
+        //     <img src={spot.previewImage ? spot.previewImage : 'placeHolder'} alt={spot.description}></img>
+        //     <p className='spotNameText'>{spot.name}</p>
+        //     <p className='spotDescriptionText'><i class="fas fa-solid fa-star" /> {spot.avgRating ? spot.avgRating : 'New'}</p>
+        //     <p className='spotDescriptionText'>{spot.city}, {spot.state}</p>
+        //     <p className='spotDescriptionText'>{spot.description}</p>
+        //     <p className='spotDescriptionText'>${spot.price} night</p>
+        // </div>
     )
 }
