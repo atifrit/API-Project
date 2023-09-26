@@ -51,7 +51,7 @@ export const readSpotByIdThunkActionCreator = (spotId) => async dispatch => {
 
     console.log(spotPOJO);
 
-    let normalizedObj = {spotId:{...spotPOJO, 'Owner':{...spotPOJO.Owner}, spotImages:{...spotPOJO.spotImages}}};
+    let normalizedObj = {[spotId]:{...spotPOJO, 'Owner':{...spotPOJO.Owner}, spotImages:{...spotPOJO.spotImages}}};
 
     dispatch(spotActionCreator(normalizedObj));
 }
