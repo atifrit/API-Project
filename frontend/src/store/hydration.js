@@ -6,6 +6,13 @@ export function hydrationActionCreator () {
     }
 }
 
+export function spotHydrationActionCreator () {
+    return {
+        type:'spotHydration',
+        payload: {spotHydration:true}
+    }
+}
+
 const initialState = {spots: false};
 export function hydrationReducer (state = initialState, action) {
     switch(action.type){
@@ -13,6 +20,10 @@ export function hydrationReducer (state = initialState, action) {
             let newState = {...state, ...action.payload};
 
             return newState;
+
+        case 'spotHydration':
+            let spotState = {...state, ...action.payload};
+            return spotState;
 
         default: return state;
     }

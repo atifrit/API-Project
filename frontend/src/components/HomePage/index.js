@@ -1,6 +1,6 @@
 import * as spotsActions from '../../store/spots';
 import { useDispatch, useSelector } from "react-redux";
-import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
+import { Link } from 'react-router-dom';
 import { hydrationActionCreator } from '../../store/hydration';
 
 import './HomePage.css'
@@ -13,6 +13,7 @@ import './HomePage.css'
 //     </div>
 //     )})}
 
+const placeHolderImage = 'https://media.istockphoto.com/id/1279117626/photo/hole-in-white-paper-with-torns-edges-coming-soon.jpg?s=1024x1024&w=is&k=20&c=D4dHftJ2zhXs7CrZjRo3m8qzagg1ncSr9HSdy_YbqY0='
 
 function HomePage (props) {
     const dispatch = useDispatch();
@@ -27,28 +28,23 @@ function HomePage (props) {
         dispatch(spotsActions.readSpotsThunkActionCreator());
     }
 
-    let history = useHistory();
 
-    function onClick (e) {
-        if(e.target.id){
-            history.push(`/spots/${e.target.id}`)
-        } else history.push(`/spots/${e.target.parentElement.id}`);
-    }
 
     return (
         <>
         <div className='homePageSpots'>
             {Object.values(spots).map((spot) => {
                 return (
-                    <div id={spot.id} className='spotDisplayCard toolTip' onClick={onClick}>
-                        <span className='toolTipText'>{spot.name}</span>
-                        <img src={spot.previewImage ? spot.previewImage : 'placeHolder'} alt={spot.description}></img>
+                <Link to={`/spots/${spot.id}`} >
+                    <div id={spot.id} className='spotDisplayCard' title={spot.name}>
+                        <img src={spot.previewImage ? spot.previewImage : placeHolderImage} alt={spot.description}></img>
                         <p className='spotNameText'>{spot.name}</p>
                         <p className='spotDescriptionText'><i class="fas fa-solid fa-star" /> {spot.avgRating ? spot.avgRating : 'New'}</p>
                         <p className='spotDescriptionText'>{spot.city}, {spot.state}</p>
                         <p className='spotDescriptionText'>{spot.description}</p>
                         <p className='spotDescriptionText'>${spot.price} night</p>
                     </div>
+                </Link>
                 )
             })}
         </div>
