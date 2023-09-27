@@ -249,6 +249,7 @@ let validateNewSpot = [
   check('name').isLength({max: 49}).withMessage("name must be less than 50 characters"),
   check('description').exists().withMessage("Description is required"),
   check('description').notEmpty().withMessage("Description is required"),
+  check('description').isLength({min: 30}).withMessage("Description must be at least 30 characters"),
   check('price').exists().withMessage("Price per day is required"),
   check('price').notEmpty().withMessage("Price per day is required"),
   handleValidationErrors]

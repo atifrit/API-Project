@@ -31,21 +31,23 @@ export default function SpotDetails () {
 
     const placeHolderImage = 'https://media.istockphoto.com/id/1279117626/photo/hole-in-white-paper-with-torns-edges-coming-soon.jpg?s=1024x1024&w=is&k=20&c=D4dHftJ2zhXs7CrZjRo3m8qzagg1ncSr9HSdy_YbqY0='
     let spot = spots[id];
-    console.log('spot images: ', spot.spotImages);
+    console.log('spot images: ', spot.SpotImages);
 
     let spotArr = [];
 
-    for (let i = 1; i < 5; i ++) {
-        if(spot.spotImages[i]) spotArr.push(spot.spotImages[i]);
-        else spotArr.push(placeHolderImage);
+    for (let i = 0; i < 5; i++) {
+        if(spot.SpotImages[i]){
+            if(spot.SpotImages[i].url && !spot.SpotImages[i].preview) spotArr.push(spot.SpotImages[i]);
+            else if (spot.SpotImages[i].url && spot.SpotImages[i].preview) spot.previewImage=spot.SpotImages[i].url
+        } else if (spotArr.length < 4) spotArr.push(placeHolderImage);
     }
 
     return (
         <>
         <div id={spot.id} className='spotDisplayCard' title={spot.name}>
             <img src={spot.previewImage ? spot.previewImage : placeHolderImage} alt={spot.description}></img>
-            <div>{spotArr.map((url) => {return (
-                <img className='smallImages' src={url} alt={spot.description}></img>
+            <div>{spotArr.map((spot) => {return (
+                <img className='smallImages' src={spot.url ? spot.url : placeHolderImage} alt={spot.description}></img>
             )})}</div>
             <p className='spotNameText'>{spot.name}</p>
             <p className='spotDescriptionText'>Hosted By {spot.Owner.firstName} {spot.Owner.lastName}</p>
