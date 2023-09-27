@@ -9,7 +9,6 @@ export default function SpotDetails () {
     let {id} = useParams();
 
     let hydration = useSelector((state) => state.hydration.spots);
-    // let spotHydration = useSelector((state) => state.hydration.spot);
 
     let spots = useSelector((state) => state.spots);
 
