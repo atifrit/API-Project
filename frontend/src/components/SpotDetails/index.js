@@ -29,22 +29,32 @@ export default function SpotDetails () {
         return null;
     }
 
-    let spot = spots[id];
-    console.log(spot.Owner);
-
-
     const placeHolderImage = 'https://media.istockphoto.com/id/1279117626/photo/hole-in-white-paper-with-torns-edges-coming-soon.jpg?s=1024x1024&w=is&k=20&c=D4dHftJ2zhXs7CrZjRo3m8qzagg1ncSr9HSdy_YbqY0='
+    let spot = spots[id];
+    console.log('spot images: ', spot.spotImages);
+
+    let spotArr = [];
+
+    for (let i = 1; i < 5; i ++) {
+        if(spot.spotImages[i]) spotArr.push(spot.spotImages[i]);
+        else spotArr.push(placeHolderImage);
+    }
+
     return (
         <>
         <div id={spot.id} className='spotDisplayCard' title={spot.name}>
             <img src={spot.previewImage ? spot.previewImage : placeHolderImage} alt={spot.description}></img>
+            <div>{spotArr.map((url) => {return (
+                <img className='smallImages' src={url} alt={spot.description}></img>
+            )})}</div>
             <p className='spotNameText'>{spot.name}</p>
             <p className='spotDescriptionText'>Hosted By {spot.Owner.firstName} {spot.Owner.lastName}</p>
-            <p className='spotDescriptionText'>{spot.city}, {spot.state} {spot.country}</p>
+            <p className='spotDescriptionText'>Location: {spot.city}, {spot.state} {spot.country}</p>
             <p className='spotDescriptionText'>{spot.description}</p>
         </div>
         <div className='calloutInfo'>
-
+            <p className='spotDescriptionText'>${spot.price} night</p>
+            <button onClick={() => alert('Feature coming soon')}>Reserve</button>
         </div>
         </>
     )
