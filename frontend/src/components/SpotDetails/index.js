@@ -13,9 +13,10 @@ export default function SpotDetails () {
 
     let spots = useSelector((state) => state.spots);
 
-    if ((Object.values(spots).length === 0 || !hydration) && (!spots[id].Owner || !spots[id].spotImages)) {
+    if (Object.values(spots).length === 0 || !hydration) {
         dispatch(hydrationActionCreator());
         dispatch(spotsActions.readSpotsThunkActionCreator());
+        return null;
     }
 
 
@@ -25,6 +26,7 @@ export default function SpotDetails () {
 
     if (!spots[id].Owner || !spots[id].spotImages) {
         dispatch(spotsActions.readSpotByIdThunkActionCreator(id));
+        return null;
     }
 
     let spot = spots[id];
@@ -37,7 +39,7 @@ export default function SpotDetails () {
         <div id={spot.id} className='spotDisplayCard' title={spot.name}>
             <img src={spot.previewImage ? spot.previewImage : placeHolderImage} alt={spot.description}></img>
             <p className='spotNameText'>{spot.name}</p>
-            <p className='spotDescriptionText'>{spot.Owner.firstName} {spot.Owner.lastName}</p>
+            <p className='spotDescriptionText'>Hosted By {spot.Owner.firstName} {spot.Owner.lastName}</p>
             <p className='spotDescriptionText'>{spot.city}, {spot.state} {spot.country}</p>
             <p className='spotDescriptionText'>{spot.description}</p>
         </div>
