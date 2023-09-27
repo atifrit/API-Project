@@ -4,6 +4,8 @@ import { csrfFetch } from './csrf';
 const initialState = {};
 const READ_ALL_SPOTS = '/spots';
 const READ_ONE_SPOT = '/spotid';
+const POST_SPOT = '/spot/new'
+const POST_IMAGES = '/spot/image'
 
 
 export const spotsReducer = (state=initialState, action) => {
@@ -14,6 +16,12 @@ export const spotsReducer = (state=initialState, action) => {
             return newState;
         case READ_ONE_SPOT:
             newState = {...state, ...action.payload};
+            return newState;
+        case POST_SPOT:
+            newState = {...state, ...action.payload}
+            return newState
+        case POST_IMAGES:
+            newState = {...state, [action.id]:{...state[action.id], spotImages:[...action.payload], previewImage:action.payload[0].url}};
             return newState;
 
         default: return state;
@@ -28,6 +36,17 @@ export const spotsReducer = (state=initialState, action) => {
     const spotActionCreator = (spotPOJO) => {return {
         type: READ_ONE_SPOT,
         payload: spotPOJO
+    }}
+
+    const postSpotActionCreator = (spotPOJO) => {return {
+        type: POST_SPOT,
+        payload: spotPOJO
+    }}
+
+    const postImagesActionCreator = (imagesArr, id) => {return {
+        type: POST_IMAGES,
+        payload:imagesArr,
+        id
     }}
 
 
@@ -47,6 +66,7 @@ export const readSpotsThunkActionCreator = () => async dispatch => {
 
 export const readSpotByIdThunkActionCreator = (spotId) => async dispatch => {
     let response = await csrfFetch(`/api/spots/${spotId}`);
+
     let spotPOJO = await response.json();
 
     console.log(spotPOJO);
@@ -54,4 +74,67 @@ export const readSpotByIdThunkActionCreator = (spotId) => async dispatch => {
     let normalizedObj = {[spotId]:{...spotPOJO, 'Owner':{...spotPOJO.Owner}, spotImages:{...spotPOJO.spotImages}}};
 
     dispatch(spotActionCreator(normalizedObj));
+}
+
+
+export const createSpotThunkActionCreator = (formData) => async dispatch => {
+
+    let {
+        address,
+        city,
+        state,
+        country,
+        lat,
+        lng,
+        name,
+        description,
+        price
+      } = formData
+
+      console.log(address, city, state, country, name, description, price);
+    let response = await csrfFetch('/api/spots', {method:'POST', body:JSON.stringify({
+        address,
+        city,
+        state,
+        country,
+        lat,
+        lng,
+        name,
+        description,
+        price
+      })});
+    let data = await response.json();
+    data.Owner=null
+    data.spotImages=null
+    console.log(data);
+    let normalizedObj = {[data.id]:{...data}}
+    dispatch(postSpotActionCreator(normalizedObj));
+    return data;
+}
+
+export const addImagesThunkActionCreator = (formData, newSpotId) => async dispatch => {
+    let {
+        previewImage,
+        image1,
+        image2,
+        image3,
+        image4
+    } = formData
+
+    let receivedInfoArr = [
+        {url:previewImage, preview: true},
+        {url:image1, preview:false},
+        {url:image2, preview:false},
+        {url:image3, preview:false},
+        {url:image4, preview:false}
+    ]
+
+    for (let i = 0; i < receivedInfoArr.length; i++) {
+
+            await csrfFetch(`/api/spots/${newSpotId}/images`, {method:'POST', body:JSON.stringify(receivedInfoArr[i])});
+
+    }
+
+    dispatch(postImagesActionCreator(receivedInfoArr, newSpotId));
+    return null
 }
