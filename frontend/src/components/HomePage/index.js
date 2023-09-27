@@ -16,8 +16,8 @@ import './HomePage.css'
 const placeHolderImage = 'https://media.istockphoto.com/id/1279117626/photo/hole-in-white-paper-with-torns-edges-coming-soon.jpg?s=1024x1024&w=is&k=20&c=D4dHftJ2zhXs7CrZjRo3m8qzagg1ncSr9HSdy_YbqY0='
 
 function HomePage (props) {
-    const dispatch = useDispatch();
 
+    const dispatch = useDispatch();
 
     let hydration = useSelector((state) => state.hydration.spots);
 
