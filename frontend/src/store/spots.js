@@ -4,8 +4,9 @@ import { csrfFetch } from './csrf';
 const initialState = {};
 const READ_ALL_SPOTS = '/spots';
 const READ_ONE_SPOT = '/spotid';
-const POST_SPOT = '/spot/new'
-const POST_IMAGES = '/spot/image'
+const POST_SPOT = '/spot/new';
+const POST_IMAGES = '/spot/image';
+const UPDATE_SPOT = '/spot/update';
 
 
 export const spotsReducer = (state=initialState, action) => {
@@ -23,6 +24,9 @@ export const spotsReducer = (state=initialState, action) => {
         case POST_IMAGES:
             newState = {...state, [action.id]:{...state[action.id], spotImages:[...action.payload], previewImage:action.payload[0].url}};
             return newState;
+        case UPDATE_SPOT:
+            newState = {...state, [action.id]:{...state[action.id], ...action.payload}};
+            return newState
 
         default: return state;
     }
@@ -49,6 +53,13 @@ export const spotsReducer = (state=initialState, action) => {
         id
     }}
 
+    const updateSpotActionCreator = (payload, id) => {
+        return {
+            type: UPDATE_SPOT,
+            payload,
+            id
+        }
+    }
 
 export const readSpotsThunkActionCreator = () => async dispatch => {
     let response = await csrfFetch('/api/spots', {method:'GET'});
@@ -137,4 +148,35 @@ export const addImagesThunkActionCreator = (formData, newSpotId) => async dispat
 
     dispatch(postImagesActionCreator(receivedInfoArr, newSpotId));
     return null
+}
+
+
+export const updateSpotThunkActionCreator = (formData, spotId) => async dispatch => {
+    let {
+        country,
+        address,
+        city,
+        state,
+        description,
+        name,
+        price
+    } = formData;
+
+    let inputData = {country,
+        address,
+        city,
+        state,
+        description,
+        name,
+        price,
+        lat:1,
+        lng:1,
+        spotId
+    }
+
+    let id = spotId;
+
+    await csrfFetch(`/api/spots/${id}`, {method:'PUT', body:JSON.stringify({...inputData})})
+
+    dispatch(updateSpotActionCreator(inputData, id))
 }

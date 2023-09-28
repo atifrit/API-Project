@@ -1,13 +1,21 @@
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import * as spotsActions from '../../store/spots';
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
+import { hydrationActionCreator } from '../../store/hydration';
 
-import './CreateSpotForm.css';
+import './UpdateSpotForm.css';
 
-export default function CreateSpotForm (props) {
-    const history = useHistory()
+
+export default function UpdateSpotform (props) {
     const dispatch = useDispatch();
+    const history = useHistory();
+    const {id} = useParams()
+
+    let hydration = useSelector((state) => state.hydration.spots);
+
+    let spots = useSelector((state) => state.spots);
+
     const [country, setCountry] = useState('');
     const [address, setAddress] = useState('');
     const [city, setCity] = useState('');
@@ -15,13 +23,40 @@ export default function CreateSpotForm (props) {
     const [description, setDescription] = useState('');
     const [name, setName] = useState('');
     const [price, setPrice] = useState('');
-    const [previewImage, setPreviewImage] = useState('');
-    const [image1, setImage1] = useState('');
-    const [image2, setImage2] = useState('');
-    const [image3, setImage3] = useState('');
-    const [image4, setImage4] = useState('');
     const [errors, setErrors] = useState({});
 
+
+    if (Object.values(spots).length === 0 || !hydration) {
+        dispatch(spotsActions.readSpotsThunkActionCreator());
+        dispatch(hydrationActionCreator());
+        return null;
+    }
+
+    let currentSpot = spots[id];
+
+    if(hydration) {
+        if(!address) {
+            setAddress(`${currentSpot.address}`)
+        }
+        if(!country) {
+            setCountry(`${currentSpot.country}`)
+        }
+        if(!city) {
+            setCity(`${currentSpot.city}`)
+        }
+        if(!state) {
+            setState(`${currentSpot.state}`)
+        }
+        if(!description) {
+            setDescription(`${currentSpot.description}`)
+        }
+        if(!name) {
+            setName(`${currentSpot.name}`)
+        }
+        if(!price) {
+            setPrice(`${currentSpot.price}`)
+        }
+    }
 
 
     function onSubmit (e) {
@@ -37,40 +72,22 @@ export default function CreateSpotForm (props) {
             description,
             name,
             price,
-            previewImage,
-            image1,
-            image2,
-            image3,
-            image4,
-            lat:0,
-            lng:0
         }
 
-        dispatch(spotsActions.createSpotThunkActionCreator(formInfo))
+        dispatch(spotsActions.updateSpotThunkActionCreator(formInfo, id))
         .then((res) => {
-            console.log('res: ', res);
-            dispatch(spotsActions.addImagesThunkActionCreator(formInfo, res.id))
-            .catch(async (response) => {
-            console.log('response: ', response);
-            const data = await response.json();
-            if(data && data.errors) {
-                setErrors(data.errors);
-                console.log(errors);
-            };
-        });
-        history.push(`/spots/${res.id}`);
+            history.push(`/spots/${id}`);
         })
         .catch(async (res) => {
             const data = await res.json();
             if(data && data.errors) {
                 setErrors(data.errors);
+                console.log(errors);
             }
         });
 
 
     }
-
-
     return (
         <>
             <h2 className='titleText'>Create a New Spot</h2>
@@ -113,17 +130,8 @@ export default function CreateSpotForm (props) {
                     <input id='priceInput' type='number' placeholder='Price per night (USD)' value={price} onChange={(e) => setPrice(e.target.value)}></input>
                     <p className='errors'>{errors.price ? errors.price : ''}</p>
                 </div>
-                <div className='formSection'>
-                <h2 className='subtitleText'>Liven up your spot with photos</h2>
-                    <p className='subheadingText'>Submit a link to at least one photo to publish your spot.</p>
-                    <input type='text' placeholder='Preview Image URL' required={true} value={previewImage} onChange={(e) => setPreviewImage(e.target.value)}></input>
-                    <input type='text' placeholder='Image URL' value={image1} onChange={(e) => setImage1(e.target.value)}></input>
-                    <input type='text' placeholder='Image URL' value={image2} onChange={(e) => setImage2(e.target.value)}></input>
-                    <input type='text' placeholder='Image URL' value={image3} onChange={(e) => setImage3(e.target.value)}></input>
-                    <input type='text' placeholder='Image URL' value={image4} onChange={(e) => setImage4(e.target.value)}></input>
-                </div>
 
-                <button className='submitButton'>Create Spot</button>
+                <button className='submitButton'>Update Spot</button>
             </form>
         </>
 
