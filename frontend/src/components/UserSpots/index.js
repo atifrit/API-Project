@@ -54,7 +54,7 @@ export default function UserSpots (props) {
                                 </div>
                             </Link>
                             <div className='userSpotsButtons'>
-                                <button id={spot.id} onClick={(e) => {history.push(`spots/${e.target.id}/edit`)}}>Update</button>
+                                <button id={spot.id} onClick={(e) => {history.push(`/spots/${e.target.id}/edit`)}}>Update</button>
                                 <button id={spot.id} onClick={() => alert('feature coming soon')}>Delete</button>
                             </div>
                             </>
