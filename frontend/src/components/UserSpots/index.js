@@ -1,7 +1,11 @@
+import React, { useState, useEffect, useRef } from "react";
 import * as spotsActions from '../../store/spots';
 import { useDispatch, useSelector } from "react-redux";
 import { hydrationActionCreator } from '../../store/hydration';
 import { Link } from 'react-router-dom';
+import OpenModalButton from '../OpenModalButton';
+import DeleteCheckModal from '../DeleteCheckModal';
+import { useModal } from "../../context/Modal";
 
 import './UserSpots.css'
 import { useHistory } from 'react-router-dom';
@@ -12,6 +16,8 @@ export default function UserSpots (props) {
     const dispatch = useDispatch();
 
     const history = useHistory()
+
+    const {closeModal} = useModal();
 
     let user = useSelector((state) => state.session.user);
 
@@ -34,6 +40,30 @@ export default function UserSpots (props) {
     }
 
 
+  const [showMenu, setShowMenu] = useState(false);
+  const ulRef = useRef();
+
+  const openMenu = () => {
+    if (showMenu) return;
+    setShowMenu(true);
+  };
+
+  useEffect(() => {
+    if (!showMenu) return;
+
+    const closeMenu = (e) => {
+      if (!ulRef.current.contains(e.target)) {
+        setShowMenu(false);
+      }
+    };
+
+    document.addEventListener('click', closeMenu);
+
+    return () => document.removeEventListener("click", closeMenu);
+  }, [showMenu]);
+
+  const closeMenu = () => setShowMenu(false);
+
 
     if(userSpots.length) {
         return (
@@ -55,7 +85,11 @@ export default function UserSpots (props) {
                             </Link>
                             <div className='userSpotsButtons'>
                                 <button id={spot.id} onClick={(e) => {history.push(`/spots/${e.target.id}/edit`)}}>Update</button>
-                                <button id={spot.id} onClick={() => alert('feature coming soon')}>Delete</button>
+                                <OpenModalButton
+                                    buttonText="Delete"
+                                    onButtonClick={closeMenu}
+                                    modalComponent={<DeleteCheckModal id={spot.id}/>}
+                                />
                             </div>
                             </>
                             )

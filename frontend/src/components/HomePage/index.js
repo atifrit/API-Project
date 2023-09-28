@@ -39,7 +39,7 @@ function HomePage (props) {
                     <div id={spot.id} className='spotDisplayCard' title={spot.name}>
                         <img src={spot.previewImage ? spot.previewImage : placeHolderImage} alt={spot.description}></img>
                         <p className='spotNameText'>{spot.name}</p>
-                        <p className='spotDescriptionText'><i class="fas fa-solid fa-star" /> {spot.avgRating ? spot.avgRating : 'New'}</p>
+                        <p className='spotDescriptionText'><i class="fas fa-solid fa-star" /> {spot.avgRating ? spot.avgRating.toFixed(2) : 'New'}</p>
                         <p className='spotDescriptionText'>{spot.city}, {spot.state}</p>
                         <p className='spotDescriptionText'>{spot.description}</p>
                         <p className='spotDescriptionText'>${spot.price} night</p>
