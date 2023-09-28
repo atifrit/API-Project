@@ -23,15 +23,18 @@ module.exports = {
    SpotImage.bulkCreate([
     {
       spotId: 1,
-      url: 'https://www.the-sun.com/wp-content/uploads/sites/6/2023/07/EB_BARBIE_COMP.jpg?w=620'
+      url: 'https://www.the-sun.com/wp-content/uploads/sites/6/2023/07/EB_BARBIE_COMP.jpg?w=620',
+      preview: true
     },
     {
       spotId: 2,
-      url: 'https://images.unsplash.com/photo-1628744448840-55bdb2497bd4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80'
+      url: 'https://images.unsplash.com/photo-1628744448840-55bdb2497bd4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80',
+      preview: true
     },
     {
       spotId: 3,
-      url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/Shack_in_Pigeon_Forge%2C_TN_by_Zachary_Davies.jpg/1280px-Shack_in_Pigeon_Forge%2C_TN_by_Zachary_Davies.jpg'
+      url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/Shack_in_Pigeon_Forge%2C_TN_by_Zachary_Davies.jpg/1280px-Shack_in_Pigeon_Forge%2C_TN_by_Zachary_Davies.jpg',
+      preview: true
     }
    ])
   },
