@@ -1,13 +1,18 @@
 import * as spotsActions from '../../store/spots';
+import React, { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { hydrationActionCreator } from '../../store/hydration';
-import { useParams } from 'react-router-dom/cjs/react-router-dom.min';
+import { useParams } from 'react-router-dom';
 import { readReviewsBySpotThunkActionCreator } from '../../store/reviews';
 import { reviewHydrationActionCreator } from '../../store/hydration';
-import './SpotDetails.css'
+import OpenModalButton from '../OpenModalButton';
+import ReviewFormModal from '../ReviewFormModal';
+import DeleteReviewModal from '../DeleteReviewModal';
+import './SpotDetails.css';
 
 export default function SpotDetails () {
     let dispatch = useDispatch();
+
     let {id} = useParams();
 
     let spotHydration = useSelector((state) => state.hydration.spots);
@@ -21,6 +26,23 @@ export default function SpotDetails () {
     let reviews = useSelector((state) => state.reviews)
 
     let user = useSelector((state) => state.session.user)
+
+    const [showMenu, setShowMenu] = useState(false);
+
+    const ulRef = useRef();
+    useEffect(() => {
+      if (!showMenu) return;
+
+      const closeMenu = (e) => {
+        if (!ulRef.current.contains(e.target)) {
+          setShowMenu(false);
+        }
+      };
+
+      document.addEventListener('click', closeMenu);
+
+      return () => document.removeEventListener("click", closeMenu);
+    }, [showMenu]);
 
     // useEffect(()=> {
     //     dispatch(readReviewsBySpotThunkActionCreator(id))
@@ -42,7 +64,6 @@ export default function SpotDetails () {
     }
 
 
-    console.log('reviews length: ', Object.values(reviews).length, 'reviewHydration: ', reviewHydration, 'reviewHydrationId: ', reviewHydrationId)
 
     if(!reviewHydration || Number(reviewHydrationId) !== Number(id)){
         dispatch(readReviewsBySpotThunkActionCreator(id))
@@ -50,9 +71,14 @@ export default function SpotDetails () {
         return null;
     }
 
+
+
+  const closeMenu = () => setShowMenu(false);
+
+
+
     const placeHolderImage = 'https://media.istockphoto.com/id/1279117626/photo/hole-in-white-paper-with-torns-edges-coming-soon.jpg?s=1024x1024&w=is&k=20&c=D4dHftJ2zhXs7CrZjRo3m8qzagg1ncSr9HSdy_YbqY0='
     let spot = spots[id];
-    console.log('spot images: ', spot.SpotImages);
 
     let spotArr = [];
 
@@ -66,15 +92,14 @@ export default function SpotDetails () {
     let reviewsArr=[];
 
     for(let el in reviews) {
-        console.log(reviews[el]);
         if(Number(reviews[el].spotId) === Number(id)) {
             reviewsArr.push(reviews[el]);
         }
     }
 
-    let sortedReviewsArr=[]
+    let sortedReviewsArr=[];
+    let reviewCheck = false;
 
-    console.log('sorted before while: ', sortedReviewsArr);
 
 
     while (reviewsArr.length) {
@@ -85,13 +110,18 @@ export default function SpotDetails () {
             if(comparisonDate > currentNewest) {
                 smallestIndex = el
             }
+            console.log('reviewsArr[el]: ', reviewsArr[el], 'user: ', user)
+            if(user) {
+                if(reviewsArr[el].userId === user.id) {
+                    reviewCheck = true
+                }
+            }
         }
         sortedReviewsArr.push(reviewsArr[smallestIndex]);
         reviewsArr.splice(smallestIndex, 1)
     }
 
 
-    console.log('sorted arr: ', sortedReviewsArr);
 
     return (
         <>
@@ -107,14 +137,22 @@ export default function SpotDetails () {
         </div>
         <div className='calloutInfo'>
             <p className='spotDescriptionText'>${spot.price} night</p>
-            <p className='spotDescriptionText'><i class="fas fa-solid fa-star" /> {spot.avgRating ? spot.avgRating.toFixed(2) : 'New'}</p>
-            <p className='spotDescriptionText'>{Number(sortedReviewsArr.length) ? `${sortedReviewsArr.length} ${sortedReviewsArr.length === 1 ? 'Review': 'Reviews'}`: ''}</p>
+            <div className='calloutReviewInfo'>
+                <p className='spotDescriptionText'><i class="fas fa-solid fa-star" /> {spot.avgRating ? spot.avgRating.toFixed(2) : 'New'}</p>
+                <p>{Number(sortedReviewsArr.length) ? <i class="fas fa-solid fa-circle"></i> : null}</p>
+                <p className='spotDescriptionText'>{Number(sortedReviewsArr.length) ? `${sortedReviewsArr.length} ${sortedReviewsArr.length === 1 ? 'Review': 'Reviews'}`: null}</p>
+            </div>
             <button onClick={() => alert('Feature coming soon')}>Reserve</button>
         </div>
         <div className='reviewsContainer'>
             <h2>Reviews</h2>
             <h3><i class="fas fa-solid fa-star" /> {spot.avgRating ? spot.avgRating.toFixed(2) : 'New'}</h3>
             <h3>{Number(sortedReviewsArr.length) ? `${sortedReviewsArr.length} ${sortedReviewsArr.length === 1 ? 'Review': 'Reviews'}`: ''}</h3>
+                <div className='reviewButton'>{(!reviewCheck && user && spots[spot.id].Owner.id !== user.id) ? <OpenModalButton
+                                    buttonText="Post your Review"
+                                    onButtonClick={closeMenu}
+                                    modalComponent={<ReviewFormModal id={spot.id} user={user}/>}
+                                /> : null}</div>
                 <div>
                     {sortedReviewsArr.length ? sortedReviewsArr.map((review) => {
                         let date = new Date(review.createdAt);
@@ -123,6 +161,13 @@ export default function SpotDetails () {
                         <div>
                             <div className='reviewInfo'>{`${review.User.firstName} ${dateString}`} </div>
                             <p className='reviewText'>{review.review}</p>
+                            <div hidden={(!user || !(user.id === review.User.id)) ? true:false}>{<OpenModalButton
+                                    className='deleteButton'
+                                    buttonText="Delete"
+                                    onButtonClick={closeMenu}
+                                    modalComponent={<DeleteReviewModal id={review.id} />}
+                                />}</div>
+                            {/* <button hidden={user.id === review.User.id ? false:true}>Delete Review</button> */}
                         </div>
                     )}) : null}
                 </div>

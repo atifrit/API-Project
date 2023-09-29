@@ -20,6 +20,13 @@ export function reviewHydrationActionCreator (id) {
     }
 }
 
+export function falseSpotHydrationActionCreator () {
+    return {
+        type: 'falseSpotHydration',
+        payload: {spots: false}
+    }
+}
+
 const initialState = {spots: false, reviews: false, id: null};
 
 export function hydrationReducer (state = initialState, action) {
@@ -36,6 +43,9 @@ export function hydrationReducer (state = initialState, action) {
         case 'reviewHydration':
             let reviewState = {...state, ...action.payload};
             return reviewState
+        case 'falseSpotHydration':
+            let falseSpotState = {...state, ...action.payload};
+            return falseSpotState;
 
         default: return state;
     }

@@ -24,6 +24,17 @@ function LoginFormModal() {
       });
   };
 
+  function demoUser () {
+    return dispatch(sessionActions.login({ credential:'Demo-lition', password:'password' }))
+    .then(closeModal)
+      .catch(async (res) => {
+        const data = await res.json();
+        if (data && data.errors) {
+          setErrors(data.errors);
+        }
+      });
+  }
+
   return (
     <>
       <h1>Log In</h1>
@@ -49,8 +60,9 @@ function LoginFormModal() {
         {errors.credential && (
           <p>{errors.credential}</p>
         )}
-        <button type="submit">Log In</button>
+        <button type="submit" disabled={(credential.split('').length < 4 || password.split('').length < 6) ? true : false}>Log In</button>
       </form>
+      <button onClick={demoUser}>Log in as a Demo User</button>
     </>
   );
 }

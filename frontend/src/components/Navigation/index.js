@@ -10,7 +10,7 @@ function Navigation({ isLoaded }){
   return (
     <ul>
       <li>
-        <NavLink exact to="/">Home</NavLink>
+        <NavLink exact to="/"><img className='logo' src='https://cdn.icon-icons.com/icons2/836/PNG/512/Airbnb_icon-icons.com_66791.png' alt='logo'></img></NavLink>
         <NavLink exact to="/spots/new">Create a New Spot</NavLink>
       </li>
       {isLoaded && (

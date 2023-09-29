@@ -1,13 +1,14 @@
 
 import { useModal } from '../../context/Modal';
 import { useDispatch } from 'react-redux';
-import './DeleteCheckModal.css'
-import { deleteSpotThunkActionCreator } from '../../store/spots';
+import './DeleteReviewModal.css'
+import { deleteReviewThunkActionCreator } from '../../store/reviews';
 import { useState } from 'react';
+import { falseSpotHydrationActionCreator } from '../../store/hydration';
 
 
 
-export default function DeleteCheckModal (props) {
+export default function DeleteReviewModal (props) {
     const {closeModal} = useModal();
     const dispatch = useDispatch();
     const [errors, setErrors] = useState({});
@@ -17,7 +18,7 @@ export default function DeleteCheckModal (props) {
     }
 
     function deleteClick () {
-        dispatch(deleteSpotThunkActionCreator(props.id))
+        dispatch(deleteReviewThunkActionCreator(props.id))
         .then((res) => {
             console.log('res: ', res);
         }).catch(async (res) => {
@@ -27,15 +28,16 @@ export default function DeleteCheckModal (props) {
                 console.log(errors);
             }
         });
+        dispatch(falseSpotHydrationActionCreator());
         closeModal();
     }
 
     return (
         <>
             <h2 className='titleText'>Confirm Delete</h2>
-            <p className='checkText'>Are you sure you want to delete this spot?</p>
-            <button onClick={denyClick} className='denyButton'>No (Keep Spot)</button>
-            <button onClick={deleteClick} className='deleteButton'>Yes (Delete Spot)</button>
+            <p className='checkText'>Are you sure you want to delete this review?</p>
+            <button onClick={denyClick} className='denyButton'>No (Keep Review)</button>
+            <button onClick={deleteClick} className='deleteButton'>Yes (Delete Review)</button>
         </>
     );
 }

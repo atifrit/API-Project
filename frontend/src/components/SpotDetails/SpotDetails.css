@@ -1,6 +1,6 @@
 .calloutInfo {
     border: 1px solid black;
-    width:200px;
+    width:300px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -10,4 +10,10 @@
 .smallImages {
     width: 100px;
     height:60px;
+}
+
+.calloutReviewInfo {
+    display: flex;
+    justify-content: space-between;
+    width:200px
 }

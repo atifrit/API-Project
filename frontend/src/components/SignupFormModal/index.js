@@ -107,7 +107,7 @@ function SignupFormModal() {
         {errors.confirmPassword && (
           <p>{errors.confirmPassword}</p>
         )}
-        <button type="submit">Sign Up</button>
+        <button type="submit" disabled={(!email || !username || !firstName || !lastName || !password || !confirmPassword || username.split('').length < 4 || password.split('').length < 6) ? true : false}>Sign Up</button>
       </form>
     </>
   );
