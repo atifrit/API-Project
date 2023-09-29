@@ -5,10 +5,8 @@ import { hydrationActionCreator } from '../../store/hydration';
 import { Link } from 'react-router-dom';
 import OpenModalButton from '../OpenModalButton';
 import DeleteCheckModal from '../DeleteCheckModal';
-import { useModal } from "../../context/Modal";
-
-import './UserSpots.css'
 import { useHistory } from 'react-router-dom';
+import './UserSpots.css'
 
 const placeHolderImage = 'https://media.istockphoto.com/id/1279117626/photo/hole-in-white-paper-with-torns-edges-coming-soon.jpg?s=1024x1024&w=is&k=20&c=D4dHftJ2zhXs7CrZjRo3m8qzagg1ncSr9HSdy_YbqY0=';
 
@@ -16,8 +14,6 @@ export default function UserSpots (props) {
     const dispatch = useDispatch();
 
     const history = useHistory()
-
-    const {closeModal} = useModal();
 
     let user = useSelector((state) => state.session.user);
 
@@ -43,10 +39,7 @@ export default function UserSpots (props) {
   const [showMenu, setShowMenu] = useState(false);
   const ulRef = useRef();
 
-  const openMenu = () => {
-    if (showMenu) return;
-    setShowMenu(true);
-  };
+
 
   useEffect(() => {
     if (!showMenu) return;
