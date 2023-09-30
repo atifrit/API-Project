@@ -1,0 +1,16 @@
+.filled {
+    color: saddlebrown;
+}
+
+.empty {
+    color: burlywood;
+}
+
+.rating-input {
+    display:flex;
+    margin:5px;
+}
+
+.starText {
+    margin-left:5px;
+}
