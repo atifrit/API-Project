@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import * as spotsActions from '../../store/spots';
 import { useHistory } from "react-router-dom";
 
@@ -21,6 +21,7 @@ export default function CreateSpotForm (props) {
     const [image3, setImage3] = useState('');
     const [image4, setImage4] = useState('');
     const [errors, setErrors] = useState({});
+    let user = useSelector(state => state.session.user);
 
 
 
@@ -123,7 +124,7 @@ export default function CreateSpotForm (props) {
                     <input type='text' placeholder='Image URL' value={image4} onChange={(e) => setImage4(e.target.value)}></input>
                 </div>
 
-                <button className='submitButton'>Create Spot</button>
+                <button className='submitButton' disabled={user ? false : true}>Create Spot</button>
             </form>
         </>
 
