@@ -10,7 +10,6 @@ import './ReviewFormModal.css';
 
 export default function ReviewFormModal(props) {
     const id = props.id;
-    console.log('id: ', id);
     let user = useSelector((state) => state.session.user);
     const { closeModal } = useModal();
     const dispatch = useDispatch();
@@ -32,14 +31,12 @@ export default function ReviewFormModal(props) {
 
         dispatch(reviewsActions.postReviewThunkActionCreator(formInfo, id, user))
             .then((res) => {
-                console.log('res: ', res);
                 // history.push(`/spots/${res.id}`);
             })
             .catch(async (res) => {
                 const data = await res.json();
                 if (data && data.errors) {
                     setErrors(data.errors);
-                    console.log(errors);
                 }
 
             });
@@ -48,7 +45,6 @@ export default function ReviewFormModal(props) {
 
     }
 
-    console.log('prereturn stars:', stars);
 
     return (
         <>

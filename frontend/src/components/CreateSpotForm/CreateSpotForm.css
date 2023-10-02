@@ -93,6 +93,7 @@ div.cityState>input {
     width: 500px;
     justify-content: space-evenly;
     align-items: center;
+    margin-bottom: 10px;
 }
 
 #bottomInput {

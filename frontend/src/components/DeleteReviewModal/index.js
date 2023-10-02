@@ -20,12 +20,10 @@ export default function DeleteReviewModal (props) {
     function deleteClick () {
         dispatch(deleteReviewThunkActionCreator(props.id))
         .then((res) => {
-            console.log('res: ', res);
         }).catch(async (res) => {
             const data = await res.json();
             if(data && data.errors) {
                 setErrors(data.errors);
-                console.log(errors);
             }
         });
         dispatch(falseSpotHydrationActionCreator());
