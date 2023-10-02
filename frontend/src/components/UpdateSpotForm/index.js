@@ -90,7 +90,7 @@ export default function UpdateSpotform (props) {
     return (
         <>
             <div className='titleContainer'>
-                <h2 className='titleText'>Create a New Spot</h2>
+                <h2 className='titleText'>Update your Spot</h2>
             </div>
             <form onSubmit={onSubmit} className='createForm'>
                 <div className='formSection'>
