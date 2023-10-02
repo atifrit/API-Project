@@ -33,11 +33,11 @@ export default function DeleteReviewModal (props) {
     }
 
     return (
-        <>
-            <h2 className='titleText'>Confirm Delete</h2>
+        <div className='deleteModalPopup'>
+            <h2 className='deleteReviewTitleText'>Confirm Delete</h2>
             <p className='checkText'>Are you sure you want to delete this review?</p>
-            <button onClick={denyClick} className='denyButton'>No (Keep Review)</button>
             <button onClick={deleteClick} className='deleteButton'>Yes (Delete Review)</button>
-        </>
+            <button onClick={denyClick} className='denyButton'>No (Keep Review)</button>
+        </div>
     );
 }

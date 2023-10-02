@@ -52,13 +52,12 @@ export default function ReviewFormModal(props) {
 
     return (
         <>
-            <h2 className='titleText'>How was your stay?</h2>
+            <h2 className='reviewModalTitleText'>How was your stay?</h2>
             <div>{errors.statusCode >= 500 ? errors.message : null}</div>
-            <form onSubmit={onSubmit}>
-                <input type='text' value={review} onChange={(e) => {
+            <form className='reviewForm' onSubmit={onSubmit}>
+                <textarea className='reviewTextInput' type='text' value={review} onChange={(e) => {
                     setReview(e.target.value)
-                    console.log(review)
-                }} placeholder='Leave your review here...'></input>
+                }} placeholder='Leave your review here...'></textarea>
                 <div className='starsContainer'>
                     <div className="rating-input">
                         <div className={activeRating > 0 ? 'filled' : 'empty'} >
@@ -76,12 +75,12 @@ export default function ReviewFormModal(props) {
                         <div className={activeRating > 4 ? 'filled' : 'empty'} >
                             <i className="fa fa-star" onMouseEnter={() => setActiveRating(5)} onMouseLeave={() => setActiveRating(stars)} onClick={() => setStars(5)}></i>
                         </div>
-                        <div className='starText descriptionText'>
+                        <div className='starText'>
                             Stars
                         </div>
                     </div>
                 </div>
-                <button disabled={(review.split('').length < 10 || stars < 1) ? true : false} className='deleteButton'>Submit your Review</button>
+                <button disabled={(review.split('').length < 10 || stars < 1) ? true : false} className='postnewReviewButton'>Submit your Review</button>
             </form>
         </>
     );

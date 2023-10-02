@@ -1,3 +1,60 @@
 .homePageSpots {
     display: flex;
 }
+
+.cityStateRate {
+    display: flex;
+    justify-content: space-between;
+}
+
+.spotContainer {
+    display: flex;
+    flex-direction: column;
+}
+
+.userSpotsButtons {
+    width:170px;
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.manageButtons {
+    background-color: grey;
+    color: white;
+    border: 2px solid black;
+    box-shadow: 2px 2px black;
+    cursor: pointer;
+}
+
+.manageSpotsTitleText {
+    font-size: 30px;
+    font-family: sans-serif;
+    width: 250px;
+    text-align: center;
+
+}
+
+.newSpotLink {
+    width: 150px;
+    text-decoration: none;
+    color: white;
+    text-align: center;
+    font-family: sans-serif;
+}
+
+.newSpotLinkContainer {
+    width: 150px;
+    height: 30px;
+    background-color: grey;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 2px solid black;
+    box-shadow: 3px 3px black;
+    cursor: pointer;
+    margin-left:25px;
+}
+
+.manageLinks {
+    text-decoration: underline white 1px;
+}

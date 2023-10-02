@@ -2,6 +2,11 @@
     color: saddlebrown;
 }
 
+.starText {
+    font-family: sans-serif;
+    font-size: 15px;
+}
+
 .empty {
     color: burlywood;
 }
@@ -9,8 +14,45 @@
 .rating-input {
     display:flex;
     margin:5px;
+    width: 200px;
+    justify-content: center;
 }
 
 .starText {
     margin-left:5px;
+}
+
+.reviewForm {
+    display:flex;
+    flex-direction: column;
+    width: 300px;
+    align-items: center;
+}
+
+.reviewModalTitleText {
+    font-family: sans-serif;
+    font-size: 20px;
+    width: 300px;
+    text-align: center;
+}
+
+.postnewReviewButton {
+    width: 250px;
+    height: 30px;
+    color: white;
+    background-color: rgb(245, 85, 67);
+    border: 2px solid black;
+    box-shadow: 3px 3px black;
+}
+
+.postnewReviewButton:disabled {
+    color: lightgray;
+    background-color: white;
+}
+
+.reviewTextInput {
+    width: 250px;
+    height: 100px;
+    resize: none;
+    background-color:rgb(217, 238, 245);
 }

@@ -31,11 +31,11 @@ export default function DeleteCheckModal (props) {
     }
 
     return (
-        <>
-            <h2 className='titleText'>Confirm Delete</h2>
-            <p className='checkText'>Are you sure you want to delete this spot?</p>
-            <button onClick={denyClick} className='denyButton'>No (Keep Spot)</button>
+        <div className='deleteModalPopup'>
+            <h2 className='deleteTitleText'>Confirm Delete</h2>
+            <p className='checkText'>Are you sure you want to remove this spot?</p>
             <button onClick={deleteClick} className='deleteButton'>Yes (Delete Spot)</button>
-        </>
+            <button onClick={denyClick} className='denyButton'>No (Keep Spot)</button>
+        </div>
     );
 }

@@ -1,0 +1,10 @@
+.updateButton {
+    width:140px;
+    height: 25px;
+    border: 2px solid black;
+    box-shadow: 2px 2px black;
+    cursor: pointer;
+    margin-top: 15px;
+    background-color: rgb(245, 85, 67);
+    color: white;
+}

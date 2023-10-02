@@ -10,7 +10,7 @@ import './UserSpots.css'
 
 const placeHolderImage = 'https://media.istockphoto.com/id/1279117626/photo/hole-in-white-paper-with-torns-edges-coming-soon.jpg?s=1024x1024&w=is&k=20&c=D4dHftJ2zhXs7CrZjRo3m8qzagg1ncSr9HSdy_YbqY0=';
 
-export default function UserSpots (props) {
+export default function UserSpots(props) {
     const dispatch = useDispatch();
 
     const history = useHistory()
@@ -27,76 +27,77 @@ export default function UserSpots (props) {
     }
 
     const userSpots = [];
-    if(user) {
+    if (user) {
         for (let spot of Object.values(spots)) {
-            if(spot.ownerId === user.id) {
+            if (spot.ownerId === user.id) {
                 userSpots.push(spot);
             }
         }
     }
 
 
-  const [showMenu, setShowMenu] = useState(false);
-  const ulRef = useRef();
+    const [showMenu, setShowMenu] = useState(false);
+    const ulRef = useRef();
 
 
 
-  useEffect(() => {
-    if (!showMenu) return;
+    useEffect(() => {
+        if (!showMenu) return;
 
-    const closeMenu = (e) => {
-      if (!ulRef.current.contains(e.target)) {
-        setShowMenu(false);
-      }
-    };
+        const closeMenu = (e) => {
+            if (!ulRef.current.contains(e.target)) {
+                setShowMenu(false);
+            }
+        };
 
-    document.addEventListener('click', closeMenu);
+        document.addEventListener('click', closeMenu);
 
-    return () => document.removeEventListener("click", closeMenu);
-  }, [showMenu]);
+        return () => document.removeEventListener("click", closeMenu);
+    }, [showMenu]);
 
-  const closeMenu = () => setShowMenu(false);
+    const closeMenu = () => setShowMenu(false);
 
 
-    if(userSpots.length) {
+    if (userSpots.length) {
         return (
             <>
-            <h2 className='titleText'>Manage Spots</h2>
-            <div className='homePageSpots'>
-                {userSpots.map((spot) => {
+                <h2 className='manageSpotsTitleText'>Manage Spots</h2>
+                <div className='homePageSpots'>
+                    {userSpots.map((spot) => {
                         return (
-                            <>
-                            <Link to={`/spots/${spot.id}`} >
-                                <div id={spot.id} className='spotDisplayCard' title={spot.name}>
-                                    <img src={spot.previewImage ? spot.previewImage : placeHolderImage} alt={spot.description}></img>
-                                    <p className='spotNameText'>{spot.name}</p>
-                                    <p className='spotDescriptionText'><i class="fas fa-solid fa-star" /> {spot.avgRating ? spot.avgRating : 'New'}</p>
-                                    <p className='spotDescriptionText'>{spot.city}, {spot.state}</p>
-                                    <p className='spotDescriptionText'>{spot.description}</p>
-                                    <p className='spotDescriptionText'>${spot.price} night</p>
+                            <div className='spotContainer'>
+                                <Link className='manageLinks' to={`/spots/${spot.id}`} >
+                                    <div id={spot.id} className='spotDisplayCard' title={spot.name}>
+                                        <img src={spot.previewImage ? spot.previewImage : placeHolderImage} alt={spot.description}></img>
+                                        <div className='cityStateRate'>
+                                            <p className='spotDescriptionText'>{spot.city}, {spot.state}</p>
+                                            <p className='spotDescriptionText'><i class="fas fa-solid fa-star" /> {spot.avgRating ? spot.avgRating : 'New'}</p>
+                                        </div>
+                                        <p className='spotDescriptionText'>${spot.price} night</p>
+                                    </div>
+                                </Link>
+                                <div className='userSpotsButtons'>
+                                    <button className='manageButtons' id={spot.id} onClick={(e) => { history.push(`/spots/${e.target.id}/edit`) }}>Update</button>
+                                    <OpenModalButton
+                                        buttonText="Delete"
+                                        onButtonClick={closeMenu}
+                                        modalComponent={<DeleteCheckModal id={spot.id} />}
+                                        className='manageButtons'
+                                    />
                                 </div>
-                            </Link>
-                            <div className='userSpotsButtons'>
-                                <button id={spot.id} onClick={(e) => {history.push(`/spots/${e.target.id}/edit`)}}>Update</button>
-                                <OpenModalButton
-                                    buttonText="Delete"
-                                    onButtonClick={closeMenu}
-                                    modalComponent={<DeleteCheckModal id={spot.id}/>}
-                                />
                             </div>
-                            </>
-                            )
-                })}
-            </div>
+                        )
+                    })}
+                </div>
             </>
         )
     } else {
         return (
             <>
-            <h2 className='titleText'>Manage Spots</h2>
-            <div className='homePageSpots'>
-                <Link exact to='/spots/new'>Create a New Spot</Link>
-            </div>
+                <h2 className='manageSpotsTitleText'>Manage Spots</h2>
+                <div className='newSpotLinkContainer'>
+                    <Link className='newSpotLink' exact to='/spots/new'>Create a New Spot</Link>
+                </div>
             </>
         )
     }

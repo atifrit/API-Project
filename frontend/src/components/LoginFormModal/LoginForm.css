@@ -16,6 +16,7 @@
     box-shadow: 2px 2px black;
     cursor: pointer;
     margin-top: 15px;
+    color: white;
     background-color: rgb(245, 85, 67);
 }
 
@@ -46,6 +47,7 @@
     padding: 10px;
     padding-bottom: 40px;
     border-radius: 5%;
+    border: 3px solid black;
 }
 
 .loginTitle {
