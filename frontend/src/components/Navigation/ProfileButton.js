@@ -55,7 +55,10 @@ function ProfileButton({ user }) {
             <li>username: {user.username}</li>
             <li>email: {user.email}</li>
             <li className='profileButtonContainer'>
-              <button className='manageSpotsButton' onClick={() => history.push('/spots/current')}>Manage Spots</button>
+              <button className='manageSpotsButton' onClick={() =>{
+                closeMenu();
+                history.push('/spots/current');
+                }}>Manage Spots</button>
             </li>
             <li className='profileButtonContainer'>
               <button onClick={logout} className='logoutButtonActual'>Log Out</button>
