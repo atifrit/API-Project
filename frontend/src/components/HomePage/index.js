@@ -15,7 +15,7 @@ import './HomePage.css'
 
 const placeHolderImage = 'https://media.istockphoto.com/id/1279117626/photo/hole-in-white-paper-with-torns-edges-coming-soon.jpg?s=1024x1024&w=is&k=20&c=D4dHftJ2zhXs7CrZjRo3m8qzagg1ncSr9HSdy_YbqY0='
 
-function HomePage (props) {
+function HomePage(props) {
 
     const dispatch = useDispatch();
 
@@ -32,22 +32,22 @@ function HomePage (props) {
 
     return (
         <>
-        <div className='homePageSpots'>
-            {Object.values(spots).map((spot) => {
-                return (
-                <Link to={`/spots/${spot.id}`} >
-                    <div id={spot.id} className='spotDisplayCard' title={spot.name}>
-                        <img src={spot.previewImage ? spot.previewImage : placeHolderImage} alt={spot.description}></img>
-                        <p className='spotNameText'>{spot.name}</p>
-                        <p className='spotDescriptionText'><i class="fas fa-solid fa-star" /> {spot.avgRating ? spot.avgRating.toFixed(2) : 'New'}</p>
-                        <p className='spotDescriptionText'>{spot.city}, {spot.state}</p>
-                        <p className='spotDescriptionText'>{spot.description}</p>
-                        <p className='spotDescriptionText'>${spot.price} night</p>
-                    </div>
-                </Link>
-                )
-            })}
-        </div>
+            <div className='homePageSpots'>
+                {Object.values(spots).map((spot) => {
+                    return (
+                        <Link to={`/spots/${spot.id}`} >
+                            <div id={spot.id} className='spotDisplayCard' title={spot.name}>
+                                <img src={spot.previewImage ? spot.previewImage : placeHolderImage} alt={spot.description}></img>
+                                <div className='location'>
+                                    <p className='spotDescriptionText'>{spot.city}, {spot.state}</p>
+                                    <p className='spotDescriptionText spotRating'><i class="fas fa-solid fa-star" /> {spot.avgRating ? spot.avgRating.toFixed(2) : 'New'}</p>
+                                </div>
+                                <p className='spotDescriptionText'>${spot.price} night</p>
+                            </div>
+                        </Link>
+                    )
+                })}
+            </div>
         </>
     )
 }
