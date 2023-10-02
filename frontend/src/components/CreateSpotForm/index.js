@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import * as spotsActions from '../../store/spots';
 import { useHistory } from "react-router-dom";
+import { falseSpotHydrationActionCreator } from "../../store/hydration";
 
 import './CreateSpotForm.css';
 
@@ -21,6 +22,7 @@ export default function CreateSpotForm(props) {
     const [image3, setImage3] = useState('');
     const [image4, setImage4] = useState('');
     const [errors, setErrors] = useState({});
+
     let user = useSelector(state => state.session.user);
 
 
@@ -49,14 +51,11 @@ export default function CreateSpotForm(props) {
 
         dispatch(spotsActions.createSpotThunkActionCreator(formInfo))
             .then((res) => {
-                console.log('res: ', res);
                 dispatch(spotsActions.addImagesThunkActionCreator(formInfo, res.id))
                     .catch(async (response) => {
-                        console.log('response: ', response);
                         const data = await response.json();
                         if (data && data.errors) {
                             setErrors(data.errors);
-                            console.log(errors);
                         };
                     });
                 history.push(`/spots/${res.id}`);
@@ -68,6 +67,7 @@ export default function CreateSpotForm(props) {
                 }
             });
 
+            dispatch(falseSpotHydrationActionCreator());
 
     }
 
@@ -78,26 +78,29 @@ export default function CreateSpotForm(props) {
                 <h2 className='titleText'>Create a New Spot</h2>
             </div>
             <form onSubmit={onSubmit} className='createForm'>
+            {errors.country ? <p className='errors'>{errors.country}</p> : null}
+            {errors.city ? <p className='errors'>{errors.city}</p> : null}
+            {errors.state ? <p className='errors'>{errors.state}</p> : null}
+            {errors.address ? <p className='errors'>{errors.address}</p> : null}
+            {errors.description ? <p className='errors'>{errors.description}</p> : null}
+            {errors.name ? <p className='errors'>{errors.name}</p> : null}
+            {errors.price ? <p className='errors'>{errors.price}</p> : null}
                 <div className='formSection'>
                     <h2 className='subtitleText'>Where's your place located?</h2>
                     <p className='subheadingText'>Guests will only get your exact address once they booked a reservation.</p>
                     <label htmlFor='countryInput'>Country</label>
                     <input className='formInput' id='countryInput' type='text' placeholder='Country' value={country} onChange={(e) => setCountry(e.target.value)}></input>
-                    <p className='errors'>{errors.country ? errors.country : ''}</p>
                     <label htmlFor='streetInput'>Street Address</label>
                     <input className='formInput' id='streetInput' type='text' placeholder='Address' value={address} onChange={(e) => setAddress(e.target.value)}></input>
-                    <p className='errors'>{errors.address ? errors.address : ''}</p>
                     <div className='cityState'>
                         <div className='subCityState'>
                             <label htmlFor='cityInput'>City</label>
                             <label htmlFor='stateInput'>State</label>
                         </div>
-                        <span className='errorContainer'>{errors.city ? <p className='errors'>{errors.city}</p> : null} {errors.state ? <p className='errors'>{errors.state}</p> : null}</span>
                         <div className='subCityStateInputs'>
                             <input className='cityStateInput' id='cityInput' type='text' placeholder='City' value={city} onChange={(e) => setCity(e.target.value)}></input>
                             <span> , </span>
                             <input className='cityStateInput' id='stateInput' type='text' placeholder='STATE' value={state} onChange={(e) => setState(e.target.value)}></input>
-
                         </div>
                     </div>
                 </div>
@@ -105,13 +108,11 @@ export default function CreateSpotForm(props) {
                     <h2 className='subtitleText'>Describe your place to guests</h2>
                     <p className='subheadingText'>Mention the best features of your space, any special amenities like fast wifi or parking, and what you love about the neighborhood.</p>
                     <textarea className='bioInput' id='descriptionText' placeholder='Please write at least 30 characters' value={description} onChange={(e) => setDescription(e.target.value)}></textarea>
-                    <p className='errors'>{errors.description ? errors.description : ''}</p>
                 </div>
                 <div className='formSection'>
                     <h2 className='subtitleText'>Create a title for your spot</h2>
                     <p className='subheadingText'>Catch guests' attention with a spot title that highlights what makes your place special.</p>
                     <input className='formInput' type='text' placeholder='Name of your spot' value={name} onChange={(e) => setName(e.target.value)}></input>
-                    <p className='errors'>{errors.name ? errors.name : ''}</p>
                 </div>
                 <div className='formSection'>
                     <h2 className='subtitleText'>Set a base price for your spot</h2>
@@ -120,7 +121,6 @@ export default function CreateSpotForm(props) {
                         <label htmlFor='priceInput'>$</label>
                         <input id='priceInput' type='number' placeholder='Price per night (USD)' value={price} onChange={(e) => setPrice(e.target.value)}></input>
                     </div>
-                    {errors.price ? <p className='errors'>{errors.price}</p> : null}
                 </div>
                 <div className='formSection'>
                     <h2 className='subtitleText'>Liven up your spot with photos</h2>

@@ -83,11 +83,19 @@ export default function SpotDetails() {
     let spotArr = [];
 
     for (let i = 0; i < 5; i++) {
+
         if (spot.SpotImages[i]) {
-            if (spot.SpotImages[i].url && !spot.SpotImages[i].preview) spotArr.push(spot.SpotImages[i]);
-            else if (spot.SpotImages[i].url && spot.SpotImages[i].preview) spot.previewImage = spot.SpotImages[i].url
-        } else if (spotArr.length < 4) spotArr.push(placeHolderImage);
+            if (!spot.SpotImages[i].preview)
+            {
+                spotArr.push(spot.SpotImages[i].url);
+            } else if (spot.SpotImages[i].url && spot.SpotImages[i].preview) {
+                spot.previewImage = spot.SpotImages[i].url
+            }
+        } else if (spotArr.length < 4) {
+            spotArr.push(placeHolderImage);
+        }
     }
+
 
     let reviewsArr = [];
 
@@ -110,7 +118,6 @@ export default function SpotDetails() {
             if (comparisonDate > currentNewest) {
                 smallestIndex = el
             }
-            console.log('reviewsArr[el]: ', reviewsArr[el], 'user: ', user)
             if (user) {
                 if (reviewsArr[el].userId === user.id) {
                     reviewCheck = true
@@ -132,7 +139,7 @@ export default function SpotDetails() {
                     <img className='bigImage' src={spot.previewImage ? spot.previewImage : placeHolderImage} alt={spot.description}></img>
                     <div className='smallImagesContainer'>{spotArr.map((spot) => {
                         return (
-                            <img className='smallImages' src={spot.url ? spot.url : placeHolderImage} alt={spot.description}></img>
+                            <img className='smallImages' src={spot} alt={spot.description}></img>
                         )
                     })}</div>
                 </div>

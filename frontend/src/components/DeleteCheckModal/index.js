@@ -19,12 +19,10 @@ export default function DeleteCheckModal (props) {
     function deleteClick () {
         dispatch(deleteSpotThunkActionCreator(props.id))
         .then((res) => {
-            console.log('res: ', res);
         }).catch(async (res) => {
             const data = await res.json();
             if(data && data.errors) {
                 setErrors(data.errors);
-                console.log(errors);
             }
         });
         closeModal();

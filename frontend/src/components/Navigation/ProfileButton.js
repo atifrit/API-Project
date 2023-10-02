@@ -64,7 +64,7 @@ function ProfileButton({ user }) {
         ) : (
           <>
             <li
-                className='profileButtonContainer'>
+                className='menuButtonContainer'>
               <OpenModalButton
                 buttonText="Log In"
                 onButtonClick={closeMenu}
@@ -73,7 +73,7 @@ function ProfileButton({ user }) {
               />
             </li>
             <li
-                className='profileButtonContainer'>
+                className='menuButtonContainer'>
               <OpenModalButton
                 buttonText="Sign Up"
                 onButtonClick={closeMenu}
