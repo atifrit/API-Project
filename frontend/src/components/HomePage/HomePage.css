@@ -1,14 +1,19 @@
 .homePageSpots {
     display: flex;
+    max-width: 1024px;
+    flex-direction: row;
+    flex-wrap: wrap;
+    text-decoration: none;
 }
 
 .spotDisplayCard {
     display: flex;
     flex-direction: column;
-    width: 300px;
-    border: 1px solid black;
+    width: 200px;
     margin: 10px;
     padding: 10px;
+    overflow-wrap: break-word;
+    text-decoration: none;
 }
 
 .toolTip {
@@ -24,4 +29,40 @@
 
 .toolTip:hover .toolTipText{
     visibility:visible
+}
+
+.spotDescriptionText {
+    width: fit-content;
+    color: black;
+    font-family: sans-serif;
+    font-size: 12px;
+    margin: 7px;
+    text-decoration: none;
+}
+
+.spotRating {
+    display:flex;
+    flex-direction: row;
+}
+
+.location {
+    display:flex;
+    text-decoration: none;
+    justify-content: space-between;
+}
+
+.fas {
+    margin-right:3px
+}
+
+img {
+    width:200px;
+    height:200px
+}
+
+html, body {
+    height:100%;
+    width:100%;
+    margin:0;
+    padding:0;
 }

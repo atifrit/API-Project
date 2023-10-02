@@ -1,19 +1,188 @@
 .calloutInfo {
-    border: 1px solid black;
-    width:300px;
+    border: 3px solid black;
+    border-radius: 10px;
+    width:350px;
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 10px;
+    box-shadow: 2px 2px lightgray;
+}
+
+.bigImage {
+    width:500px;
+    height:350px;
 }
 
 .smallImages {
-    width: 100px;
-    height:60px;
+    width: 225px;
+    height: 175px;
 }
 
 .calloutReviewInfo {
     display: flex;
     justify-content: space-between;
-    width:200px
+    align-items:center;
+    width:350px
+}
+
+.spotImagesContainer {
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    width:1024px;
+    margin-left:50px;
+}
+
+.hostText {
+    font-family: sans-serif;
+    font-size:28px;
+    color:grey;
+    width:auto;
+    margin-left: 50px;
+    margin-top: 0px;
+}
+
+.spotInfo {
+    width:100%;
+}
+
+.subheading {
+    margin-top:10px;
+    width:auto;
+    display:flex;
+    justify-content:space-between;
+    padding-bottom:10px;
+    padding-right:5px;
+}
+
+.descriptionText {
+    width:500px;
+    font-size:20px;
+    margin-left: 50px;
+    overflow-wrap: break-word;
+
+}
+
+.priceText {
+    font-size:25px;
+}
+
+.fa-circle {
+    font-size:5px;
+    margin-bottom:10px;
+}
+
+.reserveButton {
+    width:325px;
+    height:50px;
+    background-color:rgb(245, 85, 67);
+    border:2px solid black;
+    border-radius: none;
+    box-shadow: 2px 2px black;
+    color:white;
+    font-family:sans-serif;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.ratingContainer {
+    display:flex;
+    align-items:center;
+    width:145px;
+}
+
+.spotNameText {
+    font-family: sans-serif;
+    font-weight: bold;
+    font-size: 35px;
+    color:black;
+    margin-left:50px;
+    margin-bottom:10px;
+    margin-top:10px;
+}
+
+.mover {
+    margin-left: 50px;
+}
+
+#box {
+    width:100%;
+    height:10px;
+    display:flex;
+    justify-content: center;
+}
+
+#borderBottom {
+    width:90%;
+    border-bottom: 2px solid grey;
+}
+
+#reviewHeader {
+    display:flex;
+    width: fit-content;
+    justify-content:space-between;
+    align-items:center;
+    margin-left:40px;
+}
+
+.reviewInfo {
+    font-family: sans-serif;
+    font-size:17px;
+    margin-left:50px;
+}
+
+.dateInfo {
+    font-family: sans-serif;
+    color: gray;
+    font-size:15px;
+    margin-left:50px;
+    margin-top:5px;
+}
+
+.reviewText {
+    font-family: sans-serif;
+    font-size:15px;
+    margin-left:50px;
+}
+
+.deleteButtonContainer {
+    margin-left:50px;
+}
+
+.postReviewButton {
+    margin-top: 10px;
+    margin-bottom:10px;
+    margin-left:50px;
+    border: 2px solid black;
+    border-radius: none;
+    box-shadow: 3px 3px black;
+    background-color: gray;
+    color: white;
+    padding: 5px;
+    cursor: pointer;
+}
+
+.deleteReviewButton {
+    margin-top: 10px;
+    margin-bottom:10px;
+    border: 2px solid black;
+    border-radius: none;
+    box-shadow: 3px 3px black;
+    background-color: gray;
+    color: white;
+    padding: 5px;
+    cursor: pointer;
+}
+
+.postNew {
+    margin-left:50px;
+    color: black;
+    font-size: 15px;
+    font-family: sans-serif;
+}
+
+.headerMove {
+    margin-left: 10px;
+    margin-right: 10px;
 }

@@ -45,8 +45,8 @@ function ProfileButton({ user }) {
 
   return (
     <>
-      <button onClick={openMenu}>
-        <i className="fas fa-user-circle" />
+      <button onClick={openMenu} className="userButton">
+      <i class="fas fa-solid fa-bars"></i><i className="fas fa-user-circle" />
       </button>
       <ul className={ulClassName} ref={ulRef}>
         {user ? (
@@ -54,27 +54,31 @@ function ProfileButton({ user }) {
             <li>Hello, {user.firstName}</li>
             <li>username: {user.username}</li>
             <li>email: {user.email}</li>
-            <li>
-              <button onClick={logout}>Log Out</button>
+            <li className='profileButtonContainer'>
+              <button className='manageSpotsButton' onClick={() => history.push('/spots/current')}>Manage Spots</button>
             </li>
-            <li>
-              <button onClick={() => history.push('/spots/current')}>Manage Spots</button>
+            <li className='profileButtonContainer'>
+              <button onClick={logout} className='logoutButtonActual'>Log Out</button>
             </li>
           </>
         ) : (
           <>
-            <li>
+            <li
+                className='profileButtonContainer'>
               <OpenModalButton
                 buttonText="Log In"
                 onButtonClick={closeMenu}
                 modalComponent={<LoginFormModal />}
+                className='logoutButton'
               />
             </li>
-            <li>
+            <li
+                className='profileButtonContainer'>
               <OpenModalButton
                 buttonText="Sign Up"
                 onButtonClick={closeMenu}
                 modalComponent={<SignupFormModal />}
+                className='logoutButton'
               />
             </li>
           </>

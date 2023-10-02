@@ -1,0 +1,40 @@
+.signInContainer {
+    display: flex;
+    flex-direction: column;
+    margin: 10px;
+    width:300px;
+    height: 250px;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.loginButton {
+    width:300px;
+    height: 40px;
+    border: 2px solid black;
+    box-shadow: 2px 2px black;
+    cursor: pointer;
+    margin-top: 15px;
+    background-color: rgb(245, 85, 67);
+}
+
+.loginButton:disabled {
+    background-color: white;
+}
+
+.loginInput {
+    width: 290px;
+    border: 3px solid black;
+    height: 20px;
+    background-color: rgb(217, 238, 245);
+}
+
+.error {
+    color: red;
+}
+
+.loginTitle {
+    text-align: center;
+    font-family: sans-serif;
+    font-size: 25px;
+}
