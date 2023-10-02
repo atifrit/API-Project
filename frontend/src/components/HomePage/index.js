@@ -35,7 +35,7 @@ function HomePage(props) {
             <div className='homePageSpots'>
                 {Object.values(spots).map((spot) => {
                     return (
-                        <Link to={`/spots/${spot.id}`} >
+                        <Link className='homeLinks' to={`/spots/${spot.id}`} >
                             <div id={spot.id} className='spotDisplayCard' title={spot.name}>
                                 <img src={spot.previewImage ? spot.previewImage : placeHolderImage} alt={spot.description}></img>
                                 <div className='location'>
